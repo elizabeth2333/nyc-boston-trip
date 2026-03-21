@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NYC+BOS | WJ+FDD+BJ+MM</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Playfair+Display:ital,wght@0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAF7F2;--card:#fff;--ink:#2D2A26;--muted:#8A8580;--accent:#C8553D;--wang:#D4545B;--wang-bg:#FDF0F0;--fdd:#2E8B57;--fdd-bg:#EDF7F0;--bei:#3A7BD5;--bei-bg:#EDF3FC;--mie:#B8860B;--mie-bg:#FDF8ED;--all-bg:#F3F0EB;--ach:#6C3483;--ach-bg:#F5EEF8;--xhs:#FF2442;--opt:#E67E22;--radius:16px;--shadow:0 2px 20px rgba(0,0,0,.06);--shadow-hover:0 8px 40px rgba(0,0,0,.1)}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;-webkit-font-smoothing:antialiased}.container{max-width:860px;margin:0 auto;padding:16px}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;border-radius:var(--radius);background:linear-gradient(135deg,#1a1a2e,#16213e 40%,#0f3460);color:#fff;padding:48px 32px 40px;margin-bottom:24px;text-align:center}.hero::before{content:'🗽';position:absolute;right:-20px;top:-10px;font-size:140px;opacity:.08;transform:rotate(-12deg)}.hero::after{content:'🦞';position:absolute;left:-10px;bottom:-20px;font-size:100px;opacity:.07;transform:rotate(15deg)}.hero h1{font-family:'Playfair Display',serif;font-size:2.2em;font-weight:700;background:linear-gradient(135deg,#fff 30%,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}.hero .sub{font-size:1em;opacity:.75;font-weight:300;margin-bottom:16px}.hero .dates{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:6px 20px;border-radius:100px;font-size:.9em;font-weight:500}.avatars{display:flex;justify-content:center;gap:16px;margin-top:20px;flex-wrap:wrap}.avatar{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);padding:5px 14px;border-radius:100px;font-size:.85em;border:1px solid rgba(255,255,255,.15)}
+
+/* Tabs */
+.tab-nav{display:flex;gap:6px;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none}.tab-nav::-webkit-scrollbar{display:none}.tab-btn{white-space:nowrap;padding:8px 16px;border-radius:100px;border:1.5px solid #ddd;background:#fff;font-size:.82em;cursor:pointer;transition:all .25s;font-family:inherit;color:var(--muted);font-weight:500}.tab-btn:hover{border-color:var(--accent);color:var(--accent)}.tab-btn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* Panels */
+.panel{display:none}.panel.active{display:block;animation:fadeIn .35s ease}@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Day Cards */
+.day-card{background:var(--card);border-radius:var(--radius);margin-bottom:16px;box-shadow:var(--shadow);overflow:hidden}.day-header{padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;user-select:none}.day-num{width:52px;height:52px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace}.day-num .d{font-size:1.3em;line-height:1}.day-num .w{font-size:.65em;opacity:.7}.day-info{flex:1}.day-info .title{font-size:1.05em;font-weight:700}.day-info .subtitle{font-size:.82em;color:var(--muted);margin-top:2px}.day-chevron{font-size:1.2em;color:var(--muted);transition:transform .3s}.day-card.open .day-chevron{transform:rotate(180deg)}.day-body{display:none;padding:0 20px 20px}.day-card.open .day-body{display:block}
+.nyc .day-num{background:linear-gradient(135deg,#FF6B35,#F7931E);color:#fff}.bos .day-num{background:linear-gradient(135deg,#2E8B57,#3CB371);color:#fff}.transit .day-num{background:linear-gradient(135deg,#6C3483,#8E44AD);color:#fff}
+
+/* Timeline */
+.timeline{position:relative;padding-left:28px}.timeline::before{content:'';position:absolute;left:9px;top:8px;bottom:8px;width:2px;background:#e0e0e0}
+.tl-item{position:relative;margin-bottom:14px}.tl-dot{position:absolute;left:-28px;top:6px;width:20px;height:20px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.1);background:#E8F8F5}.tl-dot.uber{background:#F5EEF8}.tl-dot.subway{background:#EBF5FB}.tl-dot.bus{background:#FDF2E9}.tl-dot.train{background:#FDEBD0}.tl-dot.star{background:#F9E79F}.tl-dot.food{background:#FADBD8}
+.tl-time{font-family:'JetBrains Mono',monospace;font-size:.78em;color:var(--accent);font-weight:600}
+.tl-place{font-weight:600;font-size:.95em;margin:2px 0;cursor:pointer;display:inline-flex;align-items:center;gap:6px}.tl-place .ei{font-size:.65em;color:var(--muted);transition:transform .2s;display:inline-block}.tl-item.open .tl-place .ei{transform:rotate(90deg)}.tl-brief{font-size:.82em;color:var(--muted)}
+.tl-detail{display:none;margin-top:8px;padding:12px;background:#FAFAFA;border-radius:10px;font-size:.83em;line-height:1.8;color:#555;border:1px solid #f0f0f0}.tl-item.open .tl-detail{display:block;animation:fadeIn .2s}.dr{display:flex;gap:8px;margin-bottom:4px}.dl{font-weight:600;color:var(--ink);min-width:50px;flex-shrink:0}.tip{margin-top:8px;padding:8px 10px;background:#FEF9E7;border-radius:8px;font-size:.9em;color:#7D6608;border-left:3px solid #F1C40F}.alert{margin-top:8px;padding:8px 10px;background:#FDF0F0;border-radius:8px;font-size:.9em;color:#922B21;border-left:3px solid #E74C3C}
+.tl-tag{display:inline-block;font-size:.72em;padding:2px 8px;border-radius:100px;font-weight:600;margin-top:4px;margin-right:4px}.tag-wang{background:var(--wang-bg);color:var(--wang)}.tag-fdd{background:var(--fdd-bg);color:var(--fdd)}.tag-bei{background:var(--bei-bg);color:var(--bei)}.tag-mie{background:var(--mie-bg);color:var(--mie)}.tag-all{background:var(--all-bg);color:#666}.tag-opt{background:#FEF3E2;color:var(--opt);border:1px dashed var(--opt)}.tag-xhs{background:#FFF0F3;color:var(--xhs)}
+
+/* Achievements */
+.ach-box{background:var(--ach-bg);border-radius:12px;padding:16px;margin-top:12px;border-left:4px solid var(--ach)}.ach-box h4{color:var(--ach);font-size:.9em;margin-bottom:8px}.ach-box li{font-size:.83em;line-height:1.8;color:#5B2C6F;list-style:none}
+
+/* Meals */
+.meals-section{margin-top:16px;padding-top:14px;border-top:2px dashed #e0e0e0}
+.meals-title{font-size:.85em;font-weight:700;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.meal-card{background:#FFFCF5;border:1px solid #F5E6CC;border-radius:12px;padding:12px 14px;margin-bottom:10px;cursor:pointer}
+.meal-type{font-size:.75em;font-weight:700;color:#fff;padding:2px 10px;border-radius:100px;display:inline-block;margin-bottom:6px}
+.meal-type.lunch{background:linear-gradient(135deg,#F39C12,#E67E22)}
+.meal-type.dinner{background:linear-gradient(135deg,#E74C3C,#C0392B)}
+.meal-main{display:flex;gap:10px;align-items:flex-start}
+.meal-emoji{font-size:1.4em;flex-shrink:0}
+.meal-info{flex:1}
+.meal-name{font-weight:700;font-size:.92em}
+.meal-desc{font-size:.8em;color:var(--muted);margin-top:2px;line-height:1.6}
+.meal-meta{display:flex;gap:12px;margin-top:4px;font-size:.75em;color:var(--muted);flex-wrap:wrap}
+.meal-meta span{display:flex;align-items:center;gap:3px}
+.meal-alts-btn{font-size:.78em;color:var(--accent);cursor:pointer;margin-top:8px;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+.meal-alts-btn .ma-arrow{transition:transform .2s;display:inline-block;font-size:.7em}
+.meal-card.open .meal-alts-btn .ma-arrow{transform:rotate(90deg)}
+.meal-alts{display:none;margin-top:8px;padding-top:8px;border-top:1px dashed #eee}
+.meal-card.open .meal-alts{display:block;animation:fadeIn .2s}
+.meal-alt-item{padding:6px 0;border-bottom:1px solid #f5f5f5;font-size:.82em;display:flex;gap:8px;align-items:flex-start}
+.meal-alt-item:last-child{border-bottom:none}
+.alt-name{font-weight:600}.alt-desc{color:var(--muted);font-size:.92em}
+.meal-already{background:#F0FFF4;border-color:#C8E6C9}
+
+/* Wishes */
+.wish-card{background:var(--card);border-radius:var(--radius);padding:20px;margin-bottom:12px;box-shadow:var(--shadow);border-left:4px solid}.wish-card.wang{border-color:var(--wang)}.wish-card.fdd{border-color:var(--fdd)}.wish-card.bei{border-color:var(--bei)}.wish-card.mie{border-color:var(--mie)}.wish-name{font-size:1.1em;font-weight:700;margin-bottom:8px}
+.wish-item{cursor:pointer;transition:background .2s;border-radius:8px;padding:8px;margin:0 -8px;display:flex;gap:10px;align-items:flex-start;border-bottom:1px solid #f5f5f5;font-size:.88em}
+.wish-item:last-child{border-bottom:none}
+.wish-item:hover{background:rgba(0,0,0,.02)}
+.wish-item .emoji{font-size:1.2em;flex-shrink:0;width:28px;text-align:center}.wish-item .wi-text{flex:1}.wi-when{font-size:.78em;color:var(--muted)}.wi-status{font-size:.78em;color:#27AE60;font-weight:600}
+.wi-arrow{font-size:.6em;color:var(--muted);transition:transform .2s;margin-left:4px;display:inline-block}
+.wish-item.open .wi-arrow{transform:rotate(90deg)}
+.wish-detail{display:none;margin:8px 0 4px 38px;padding:14px;background:#FAFAFA;border-radius:12px;border:1px solid #f0f0f0;font-size:.84em;line-height:1.8;color:#555}
+.wish-item.open .wish-detail{display:block;animation:fadeIn .25s ease}
+.wd-section{margin-bottom:10px}.wd-section:last-child{margin-bottom:0}
+.wd-title{font-weight:700;color:var(--ink);font-size:.9em;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.wd-tip{padding:8px 10px;background:#FEF9E7;border-radius:8px;color:#7D6608;border-left:3px solid #F1C40F;margin-top:6px;font-size:.92em}
+.wd-save{padding:8px 10px;background:#E8F8F5;border-radius:8px;color:#1E8449;border-left:3px solid #27AE60;margin-top:6px;font-size:.92em}
+.wd-fun{padding:8px 10px;background:#EBF5FB;border-radius:8px;color:#1A5276;border-left:3px solid #3498DB;margin-top:6px;font-size:.92em}
+.wd-warn{padding:8px 10px;background:#FDF0F0;border-radius:8px;color:#922B21;border-left:3px solid #E74C3C;margin-top:6px;font-size:.92em}
+
+/* Nearby */
+.nearby-hotel-title{font-size:1.1em;font-weight:700;padding:14px 16px;border-radius:12px;margin-bottom:12px;color:#fff}
+.nyc-title{background:linear-gradient(135deg,#FF6B35,#F7931E)}
+.bos-title{background:linear-gradient(135deg,#2E8B57,#3CB371)}
+.nearby-cat-divider{font-size:.8em;font-weight:600;padding:6px 12px;border-radius:8px;margin:12px 0 8px;display:inline-block;color:#fff}
+.cat-sight{background:#E74C3C}.cat-food{background:#E67E22}.cat-shop{background:#27AE60}.cat-exp{background:#3498DB}
+.cat-header{font-size:.75em;font-weight:600;padding:4px 10px;border-radius:6px;margin:10px 0 6px;display:inline-block;color:#fff}
+.cat-see{background:#8E44AD}.cat-eat{background:#E67E22}.cat-buy{background:#27AE60}.cat-play{background:#3498DB}.cat-walk{background:#1ABC9C}.cat-mix{background:#7F8C8D}
+.nearby-card{background:var(--card);border-radius:12px;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 8px rgba(0,0,0,.04);cursor:pointer}
+.nearby-card:hover{box-shadow:var(--shadow)}
+.nearby-top{display:flex;gap:10px;align-items:flex-start}
+.nearby-emoji{font-size:1.3em;flex-shrink:0}
+.nearby-info{flex:1}
+.nearby-name{font-weight:600;font-size:.9em;display:flex;align-items:center;gap:6px}
+.nearby-cat{font-size:.65em;padding:1px 6px;border-radius:100px;background:#f0f0f0;color:var(--muted);font-weight:500}
+.na{font-size:.6em;color:var(--muted);transition:transform .2s;display:inline-block}
+.nearby-card.open .na{transform:rotate(90deg)}
+.nearby-brief{font-size:.8em;color:var(--muted);margin-top:2px}
+.nearby-meta{display:flex;gap:10px;margin-top:4px;font-size:.73em;color:var(--muted);flex-wrap:wrap}
+.nearby-meta span{display:flex;align-items:center;gap:2px}
+.nearby-detail{display:none;margin-top:8px;padding:10px;background:#FAFAFA;border-radius:8px;font-size:.82em;line-height:1.7;color:#555;border:1px solid #f0f0f0}
+.nearby-card.open .nearby-detail{display:block;animation:fadeIn .2s}
+
+/* XHS */
+.xhs-card{background:var(--card);border-radius:var(--radius);padding:16px 20px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;gap:14px;align-items:flex-start}
+.xhs-status{font-size:1.8em;flex-shrink:0;width:36px;text-align:center}
+.xhs-info{flex:1}.xhs-info h4{font-size:.95em;font-weight:700}.xhs-info p{font-size:.82em;color:var(--muted);margin-top:4px;line-height:1.6}
+.xhs-badge{display:inline-block;font-size:.7em;padding:2px 10px;border-radius:100px;font-weight:600;margin-top:6px}
+.badge-yes{background:#D5F5E3;color:#27AE60}.badge-opt{background:#FEF3E2;color:var(--opt)}.badge-no{background:#FADBD8;color:#E74C3C}
+
+/* Phrases */
+.phrase-cat{font-size:.95em;font-weight:700;margin:16px 0 8px;padding:6px 14px;background:var(--ink);color:#fff;border-radius:8px;display:inline-block}
+.phrase-row{display:grid;grid-template-columns:1fr 1fr;background:var(--card);border-radius:10px;margin-bottom:6px;box-shadow:0 1px 4px rgba(0,0,0,.04);overflow:hidden}
+.phrase-row .en{padding:10px 14px;font-size:.88em;font-weight:500;border-right:1px solid #f0f0f0}
+.phrase-row .cn{padding:10px 14px;font-size:.85em;color:var(--muted)}
+
+/* Footer */
+.footer{text-align:center;padding:32px 16px;color:var(--muted);font-size:.82em}.footer .big{font-size:2em;margin-bottom:8px}
+
+@media(max-width:600px){.hero{padding:32px 20px 28px}.hero h1{font-size:1.6em}.container{padding:10px}.phrase-row{grid-template-columns:1fr}.phrase-row .en{border-right:none;border-bottom:1px solid #f0f0f0}.avatars{gap:8px}.avatar{font-size:.78em;padding:4px 10px}.nearby-meta{gap:6px}}
+
+
+.wish-item{cursor:pointer;transition:background .2s;border-radius:8px;padding:8px!important;margin:0 -8px}
+.wish-item:hover{background:rgba(0,0,0,.02)}
+.wish-item .wi-arrow{font-size:.6em;color:var(--muted);transition:transform .2s;margin-left:4px;display:inline-block}
+.wish-item.open .wi-arrow{transform:rotate(90deg)}
+.wish-detail{display:none;margin:8px 0 4px 38px;padding:14px;background:#FAFAFA;border-radius:12px;border:1px solid #f0f0f0;font-size:.84em;line-height:1.8;color:#555}
+.wish-item.open .wish-detail{display:block;animation:fadeIn .25s ease}
+.wd-section{margin-bottom:10px}
+.wd-section:last-child{margin-bottom:0}
+.wd-title{font-weight:700;color:var(--ink);font-size:.9em;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.wd-tip{padding:8px 10px;background:#FEF9E7;border-radius:8px;color:#7D6608;border-left:3px solid #F1C40F;margin-top:6px;font-size:.92em}
+.wd-save{padding:8px 10px;background:#E8F8F5;border-radius:8px;color:#1E8449;border-left:3px solid #27AE60;margin-top:6px;font-size:.92em}
+.wd-fun{padding:8px 10px;background:#EBF5FB;border-radius:8px;color:#1A5276;border-left:3px solid #3498DB;margin-top:6px;font-size:.92em}
+.wd-warn{padding:8px 10px;background:#FDF0F0;border-radius:8px;color:#922B21;border-left:3px solid #E74C3C;margin-top:6px;font-size:.92em}
+
+.meals-section{margin-top:16px;padding-top:14px;border-top:2px dashed #e0e0e0}
+.meals-title{font-size:.85em;font-weight:700;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.meal-card{background:#FFFCF5;border:1px solid #F5E6CC;border-radius:12px;padding:12px 14px;margin-bottom:10px;transition:box-shadow .2s}
+.meal-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.meal-type{font-size:.75em;font-weight:700;color:#fff;padding:2px 10px;border-radius:100px;display:inline-block;margin-bottom:6px}
+.meal-type.lunch{background:linear-gradient(135deg,#F39C12,#E67E22)}
+.meal-type.dinner{background:linear-gradient(135deg,#E74C3C,#C0392B)}
+.meal-main{display:flex;gap:10px;align-items:flex-start}
+.meal-emoji{font-size:1.4em;flex-shrink:0}
+.meal-info{flex:1}
+.meal-name{font-weight:700;font-size:.92em}
+.meal-desc{font-size:.8em;color:var(--muted);margin-top:2px;line-height:1.6}
+.meal-meta{display:flex;gap:12px;margin-top:4px;font-size:.75em;color:var(--muted)}
+.meal-meta span{display:flex;align-items:center;gap:3px}
+.meal-alts-btn{font-size:.78em;color:var(--accent);cursor:pointer;margin-top:8px;font-weight:600;user-select:none;display:inline-flex;align-items:center;gap:4px}
+.meal-alts-btn .ma-arrow{transition:transform .2s;display:inline-block;font-size:.7em}
+.meal-card.open .meal-alts-btn .ma-arrow{transform:rotate(90deg)}
+.meal-alts{display:none;margin-top:8px;padding-top:8px;border-top:1px dashed #eee}
+.meal-card.open .meal-alts{display:block;animation:fadeIn .2s}
+.meal-alt-item{padding:6px 0;border-bottom:1px solid #f5f5f5;font-size:.82em;display:flex;gap:8px;align-items:flex-start}
+.meal-alt-item:last-child{border-bottom:none}
+.meal-alt-item .alt-name{font-weight:600;min-width:0}
+.meal-alt-item .alt-desc{color:var(--muted);font-size:.92em}
+.meal-already{background:#F0FFF4;border-color:#C8E6C9}
+
+.nearby-hotel-title{font-size:1em;font-weight:700;margin:16px 0 10px;padding:8px 14px;border-radius:10px;color:#fff;display:flex;align-items:center;gap:8px}
+.nearby-hotel-title.nyc-title{background:linear-gradient(135deg,#FF6B35,#F7931E)}
+.nearby-hotel-title.bos-title{background:linear-gradient(135deg,#2E8B57,#3CB371)}
+.nearby-card{background:var(--card);border-radius:12px;padding:14px;margin-bottom:8px;box-shadow:var(--shadow);cursor:pointer;transition:all .2s}
+.nearby-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px)}
+.nearby-top{display:flex;gap:10px;align-items:flex-start}
+.nearby-emoji{font-size:1.4em;flex-shrink:0;width:32px;text-align:center}
+.nearby-info{flex:1}
+.nearby-name{font-weight:700;font-size:.92em}
+.nearby-cat{font-size:.7em;padding:1px 8px;border-radius:100px;background:#f0f0f0;color:#666;display:inline-block;margin-left:6px}
+.nearby-brief{font-size:.8em;color:var(--muted);margin-top:2px}
+.nearby-meta{display:flex;gap:10px;margin-top:4px;font-size:.75em;color:var(--muted);flex-wrap:wrap}
+.nearby-meta span{display:flex;align-items:center;gap:2px}
+.nearby-detail{display:none;margin-top:10px;padding:10px;background:#FAFAFA;border-radius:8px;font-size:.82em;line-height:1.7;color:#555;border:1px solid #f0f0f0}
+.nearby-card.open .nearby-detail{display:block;animation:fadeIn .2s}
+.nearby-card .na{font-size:.65em;color:var(--muted);transition:transform .2s;display:inline-block;margin-left:4px}
+.nearby-card.open .na{transform:rotate(90deg)}
+
+
+.nb-hotel{font-size:1.05em;font-weight:700;margin:16px 0 10px;padding:10px 16px;border-radius:10px;color:#fff}
+.nb-nyc{background:linear-gradient(135deg,#FF6B35,#F7931E)}
+.nb-bos{background:linear-gradient(135deg,#2E8B57,#3CB371)}
+.nb-card{background:var(--card);border-radius:12px;padding:14px;margin-bottom:8px;box-shadow:var(--shadow);cursor:pointer;transition:box-shadow .2s}
+.nb-card:hover{box-shadow:var(--shadow-hover)}
+.nb-top{display:flex;justify-content:space-between;align-items:flex-start}
+.nb-name{font-weight:700;font-size:.95em}
+.nb-cat{font-size:.7em;padding:2px 8px;border-radius:100px;font-weight:600}
+.cat-eat{background:#FFF3E0;color:#E65100}
+.cat-shop{background:#E8F5E9;color:#2E7D32}
+.cat-see{background:#E3F2FD;color:#1565C0}
+.cat-play{background:#F3E5F5;color:#7B1FA2}
+.cat-cafe{background:#FBE9E7;color:#BF360C}
+.nb-meta{font-size:.78em;color:var(--muted);margin-top:4px;display:flex;flex-wrap:wrap;gap:8px}
+.nb-detail{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed #eee;font-size:.83em;color:#555;line-height:1.7}
+.nb-card.open .nb-detail{display:block;animation:fadeIn .2s}
+.nb-arrow{color:var(--muted);font-size:.65em;transition:transform .2s;display:inline-block}
+.nb-card.open .nb-arrow{transform:rotate(90deg)}
+
+.nearby-hotel-title{font-size:1em;font-weight:700;margin:16px 0 10px;padding:8px 14px;border-radius:10px;color:#fff;display:flex;align-items:center;gap:8px}
+.nearby-hotel-title.nyc-title{background:linear-gradient(135deg,#FF6B35,#F7931E)}
+
+.nearby-card{background:var(--card);border-radius:12px;padding:14px;margin-bottom:8px;box-shadow:var(--shadow);cursor:pointer;transition:all .2s}
+.nearby-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px)}
+.nearby-top{display:flex;gap:10px;align-items:flex-start}
+.nearby-emoji{font-size:1.4em;flex-shrink:0;width:32px;text-align:center}
+.nearby-info{flex:1}
+.nearby-name{font-weight:700;font-size:.92em}
+.nearby-cat{font-size:.7em;padding:1px 8px;border-radius:100px;background:#f0f0f0;color:#666;display:inline-block;margin-left:6px}
+.nearby-brief{font-size:.8em;color:var(--muted);margin-top:2px}
+.nearby-meta{display:flex;gap:10px;margin-top:4px;font-size:.75em;color:var(--muted);flex-wrap:wrap}
+.nearby-meta span{display:flex;align-items:center;gap:2px}
+.nearby-detail{display:none;margin-top:10px;padding:10px;background:#FAFAFA;border-radius:8px;font-size:.82em;line-height:1.7;color:#555;border:1px solid #f0f0f0}
+.nearby-card.open .nearby-detail{display:block;animation:fadeIn .2s}
+.nearby-card .na{font-size:.65em;color:var(--muted);transition:transform .2s;display:inline-block;margin-left:4px}
+.nearby-card.open .na{transform:rotate(90deg)}
+</style>
+</head>
+<body>
+<div id="lockScreen" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1a1a2e,#16213e 40%,#0f3460);display:flex;align-items:center;justify-content:center;z-index:9999;font-family:'Noto Sans SC',sans-serif">
+<div style="text-align:center;color:#fff;padding:32px">
+<div style="font-size:3em;margin-bottom:16px">🔒</div>
+<h2 style="font-family:'Playfair Display',serif;font-size:1.6em;margin-bottom:8px;background:linear-gradient(135deg,#fff 30%,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent">NYC × BOSTON</h2>
+<p style="opacity:.6;margin-bottom:24px;font-size:.9em">👩WJ 🧑‍💻FDD 👧BJ 🦙MM 专属行程</p>
+<input id="pwdInput" type="password" placeholder="请输入密码" style="width:220px;padding:12px 18px;border-radius:100px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-size:1em;text-align:center;outline:none;font-family:inherit;backdrop-filter:blur(10px)" onkeypress="if(event.key==='Enter')checkPwd()">
+<br>
+<button onclick="checkPwd()" style="margin-top:12px;padding:10px 32px;border-radius:100px;border:none;background:linear-gradient(135deg,#ffd700,#F7931E);color:#1a1a2e;font-weight:700;font-size:.95em;cursor:pointer;font-family:inherit">进入行程 →</button>
+<p id="pwdError" style="color:#E74C3C;margin-top:12px;font-size:.85em;display:none">密码不对哦～再试试？</p>
+</div>
+</div>
+<script>
+function checkPwd(){
+var p=document.getElementById('pwdInput').value;
+if(p==='hsp2026'||p==='HSP2026'){
+document.getElementById('lockScreen').style.display='none';
+}else{
+document.getElementById('pwdError').style.display='block';
+document.getElementById('pwdInput').value='';
+document.getElementById('pwdInput').focus();
+}
+}
+
+</script>
+
+<div class="container">
+<div class="hero"><h1>NEW YORK × BOSTON</h1><div class="sub">纽约 + 波士顿 · HSP 2026 @ MIT</div><div class="dates">📅 2026.3.21 — 3.30</div><div class="avatars"><div class="avatar">👩 WJ</div><div class="avatar">🧑‍💻 FDD</div><div class="avatar">👧 BJ</div><div class="avatar">🦙 MM</div></div></div>
+
+<div class="tab-nav">
+<button class="tab-btn active" data-tab="itinerary">📅 每日行程</button>
+<button class="tab-btn" data-tab="wishes">💫 大家的心愿</button>
+<button class="tab-btn" data-tab="nearby">🗺️ 酒店周边</button>
+<button class="tab-btn" data-tab="xhs">📕 小红书参考</button>
+<button class="tab-btn" data-tab="phrases">💬 实用英语</button>
+</div>
+
+<div class="panel active" id="itinerary"></div>
+
+<div class="panel" id="wishes">
+
+
+<div class="wish-card fdd"><div class="wish-name">🧑‍💻 FDD</div>
+
+<div class="wish-item" onclick="this.classList.toggle('open')"><span class="emoji">🍔</span><div class="wi-text"><b>吃地道美式汉堡 <span class="wi-arrow">▶</span></b><br>Five Guys (3/21) + Shake Shack (3/24)<br><span class="wi-when">全美最受欢迎汉堡 + 纽约本土精品汉堡</span></div><span class="wi-status">✅</span>
+<div class="wish-detail">
+<div class="wd-section"><div class="wd-title">🍔 Two Burgers, Two Styles</div>
+<b>Five Guys</b> — 美国中产阶级最爱的汉堡店，主打"真材实料"：现点现做牛肉饼，配料无限加(mushrooms/jalapeños/grilled onions...)，薯条多到吃不完。花生免费吃！<br>
+<b>Shake Shack</b> — 纽约土生土长的精品快餐，从Madison Square Park的一个小推车起家，现在全球开花。更精致、更潮，是纽约文化的一部分。</div>
+<div class="wd-save">💰 省钱攻略：Five Guys的Regular Burger其实是双层肉饼！如果一个人吃，点Little Burger就是单层的，够吃了~$8-10。薯条点Regular一份两个人分绰绰有余。Shake Shack的SmokeShack比ShackBurger只贵$1但加了培根和辣椒，性价比更高。</div>
+<div class="wd-fun">✨ 有趣的事：在Five Guys结账时注意看收据，上面有一个调查网站，填完可以免费获得一份薯条/饮料！Shake Shack可以点他们的Concrete（冻酸奶冰淇淋），每家店有不同限定口味。</div>
+<div class="wd-tip">💡 点餐英语：Five Guys — "I'll have a Little Cheeseburger with lettuce, tomato, and grilled onions, and a regular Cajun Fries." Shake Shack — "Can I get a ShackBurger, Cheese Fries, and a Black & White shake?"</div>
+</div></div>
+
+<div class="wish-item" onclick="this.classList.toggle('open')"><span class="emoji">⌚</span><div class="wi-text"><b>买Apple Watch <span class="wi-arrow">▶</span></b><br>Apple Store 第五大道 (3/21)<br><span class="wi-when">⚠️ 买GPS版！不买Cellular版！</span></div><span class="wi-status">✅</span>
+<div class="wish-detail">
+<div class="wd-warn">⚠️ 最重要的事：只买GPS版！Cellular版频段锁区，美版eSIM不兼容香港/中国大陆运营商，买了蜂窝功能也用不了！GPS版功能完全一样（除了脱离手机打电话），全球通用。</div>
+<div class="wd-save">💰 省钱攻略：美国Apple Watch比香港便宜约HKD 200-400。但纽约有~8.875%消费税！如果想省税可以考虑在New Hampshire（免税州）或Delaware买，但太远不现实。不过New Jersey的电子产品税率是6.625%，比纽约低一些。Apple国际联保，回香港可以保修。</div>
+<div class="wd-fun">✨ 第五大道Apple Store是全球最著名的苹果店，24小时营业，玻璃立方体入口是纽约地标之一！地下空间超大，体验区可以试戴各种表带。买完可以让店员帮你现场激活配对。</div>
+<div class="wd-tip">💡 购买英语："Hi, I'd like to buy an Apple Watch Series 10, GPS version, 46mm, in midnight." 如果店员推荐Cellular版直接说 "I'll stick with GPS, thanks."</div>
+</div></div>
+
+<div class="wish-item" onclick="this.classList.toggle('open')"><span class="emoji">👜</span><div class="wi-text"><b>买Coach包 <span class="wi-arrow">▶</span></b><br>Coach Outlet @ Jersey Gardens (3/22)<br><span class="wi-when">NJ买衣服鞋免税！Outlet比专柜便宜50-70%</span></div><span class="wi-status">✅</span>
+<div class="wish-detail">
+<div class="wd-section"><div class="wd-title">👜 Coach Outlet vs 专柜</div>
+Outlet店有两种货：①专柜下架打折款 ②Outlet专供线（性价比超高但材质略不同）。两种都比国内便宜太多！热门款Tabby系列、Field Tote、Willow系列在Outlet经常有。</div>
+<div class="wd-save">💰 省钱攻略：Jersey Gardens是NJ的Outlet，买衣服鞋子完全免税（电子产品仍有税）！进门先去Guest Services说 "I'm an international visitor" 拿coupon book，通常有额外10-15% off叠加在Outlet价上！Coach店内还可能有 "spend $200 get $50 off" 之类的活动，问店员 "Are there any additional promotions today?" 多重折扣叠加后价格非常香。</div>
+<div class="wd-fun">✨ 有趣的事：Coach 1941年创立于纽约，是真正的纽约品牌！在纽约买Coach有一种"产地直购"的满足感。Outlet的店员通常很热情，你可以让她帮你搭配不同颜色和款式。买完别忘了退税（如果你的国家有退税政策）。</div>
+<div class="wd-tip">💡 "I'm looking for a crossbody bag. What's popular right now?" / "Is this part of any promotion?" / "Can I use the visitor coupon with the store discount?"</div>
+</div></div>
+</div>
+
+<div class="wish-card bei"><div class="wish-name">👧 BJ</div>
+
+<div class="wish-item" onclick="this.classList.toggle('open')"><span class="emoji">🗽</span><div class="wi-text"><b>看自由女神像 <span class="wi-arrow">▶</span></b><br>Staten Island Ferry 免费渡轮 (3/24)<br><span class="wi-when">上船站右侧靠栏杆！</span></div><span class="wi-status">✅</span>
+<div class="wish-detail">
+<div class="wd-section"><div class="wd-title">🗽 观赏攻略</div>
+Staten Island Ferry是通勤渡轮，完全免费！每30分钟一班。上船后立刻去右侧(starboard)靠栏杆站好，这是看自由女神像最佳角度。去程右侧看女神，到了Staten Island不用下船（或下船换对面船），回程左侧看曼哈顿天际线。全程约1小时。</div>
+<div class="wd-save">💰 省钱攻略：完全免费！比花$24-44买观光船票划算太多。唯一不如观光船的是不能绕到女神正面，但侧面角度拍照一样很美。如果想更近距离看，可以花$24买Statue Cruises到Liberty Island，但需要排队安检很费时间，我们时间不够就坐免费的足够了！</div>
+<div class="wd-fun">✨ 有趣的事：自由女神像是法国1886年送给美国的礼物，象征自由和民主。她的全名是"Liberty Enlightening the World"。手上的火炬代表启蒙，脚下的断链代表摆脱压迫。在Ferry上看她从远处慢慢变大的感觉非常震撼！拍照tip：用手机人像模式，以女神像为背景拍个到此一游照。</div>
+<div class="wd-tip">💡 Ferry码头在Whitehall Terminal（地铁South Ferry站或Bowling Green站）。不用买票、不用预约，直接进去排队上船。船很大，4000人，不用担心没位置。</div>
+</div></div>
+
+<div class="wish-item" onclick="this.classList.toggle('open')"><span class="emoji">🦞</span><div class="wi-text"><b>吃波士顿龙虾 <span class="wi-arrow">▶</span></b><br>Legal Sea Foods (3/27晚)<br><span class="wi-when">Lobster Roll~$28 · 整只~$38+</span></div><span class="wi-status">✅</span>
+<div class="wish-detail">
+<div class="wd-section"><div class="wd-title">🦞 龙虾点餐完全攻略</div>
+<b>Lobster Roll 龙虾卷 ~$28</b> — 最经典的吃法！分两种风格：Connecticut式（热黄油浇淋，龙虾肉温热）和Maine式（冷拌蛋黄酱，像沙拉）。第一次吃建议点Connecticut式，黄油香+龙虾鲜的组合太绝了。<br><br>
+<b>Steamed Lobster 整只蒸龙虾 ~$38+</b> — 按重量计价，1.25lb起。服务员会帮你选活龙虾，端上来配融化黄油。吃法：先掰钳子→用工具敲开→蘸黄油吃。messy but worth it!<br><br>
+<b>Lobster Bisque 龙虾浓汤 ~$14</b> — 可以作为前菜，浓郁鲜美。<br><br>
+<b>New England Clam Chowder ~$10</b> — 波士顿另一个必吃！奶油蛤蜊浓汤，配面包碗(bread bowl)吃绝了。</div>
+<div class="wd-save">💰 省钱攻略：Legal Sea Foods午餐菜单比晚餐便宜不少，但我们安排在晚上也ok因为波士顿晚上可以出门。4个人建议点：2个Lobster Roll + 1个Steamed Lobster大家分 + 1个Clam Chowder + 配菜，人均$30-40很满足了。别点太多！龙虾很filling。</div>
+<div class="wd-fun">✨ 波士顿和龙虾的关系就像重庆和火锅！这里的龙虾从大西洋直接打捞，新鲜程度是其他城市比不了的。吃龙虾的时候会给你围兜(bib)和湿巾，不用怕弄脏衣服。吃完龙虾后手上的黄油味可能要洗好几遍才干净，但这就是仪式感！</div>
+<div class="wd-tip">💡 点餐英语："We'd like a Steamed Lobster, about 1.5 pounds, and two Lobster Rolls — Connecticut style please. And a New England Clam Chowder to share." 小费18-20%。</div>
+</div></div>
+</div>
+
+<div class="wish-card mie"><div class="wish-name">🦙 MM</div>
+
+<div class="wish-item" onclick="this.classList.toggle('open')"><span class="emoji">📚</span><div class="wi-text"><b>逛书店 ×4 <span class="wi-arrow">▶</span></b><br>McNally Jackson · Strand · MIT COOP · Harvard COOP<br><span class="wi-when">四家书店大满贯！</span></div><span class="wi-status">✅</span>
+<div class="wish-detail">
+<div class="wd-section"><div class="wd-title">📚 四家书店各有灵魂</div>
+<b>① McNally Jackson (3/22 SoHo)</b> — 纽约最美独立书店！选书品味极佳，文学/艺术/设计类特别强。店内有Risograph印刷工坊，可以现场印制个性化明信片！咖啡角也很棒。<br><br>
+<b>② Strand (3/23 Union Sq)</b> — "18 Miles of Books" 传奇！1927年创立，二手书+新书混搭，经常能淘到绝版好书。帆布袋是纽约文化icon，几乎人手一个。地下室的$1-3特价书区是宝藏！<br><br>
+<b>③ MIT COOP (3/28 Cambridge)</b> — MIT官方书店，学术书+MIT周边。理工科书籍和MIT branded merchandise是特色。买件MIT帽衫=学霸同款。<br><br>
+<b>④ Harvard COOP (3/29 Cambridge)</b> — Harvard官方书店，1882年创立！比MIT COOP更大更全，Harvard周边纪念品种类最多。</div>
+<div class="wd-save">💰 省钱攻略：Strand的地下室$1-3区可以淘到超划算的好书！帆布袋$15-20比在淘宝代购便宜。MIT/Harvard COOP的帽衫可能$40-60，但这是只有在校园才能买到的正版，回国后就是独特纪念品。McNally Jackson的明信片/文具比书便宜又好看，适合做小礼物。</div>
+<div class="wd-fun">✨ 集齐四家书店可以发一条超有格调的朋友圈/小红书！建议每家书店都拍一张"手捧书+书店背景"的照片，做成九宫格。Strand门口的红色大字招牌是经典打卡位。在Harvard COOP买书时让收银员盖一个Harvard纪念章，很多书店有这个服务！</div>
+</div></div>
+
+<div class="wish-item" onclick="this.classList.toggle('open')"><span class="emoji">🐂</span><div class="wi-text"><b>逛华尔街 <span class="wi-arrow">▶</span></b><br>Wall Street + Charging Bull (3/24)<br><span class="wi-when">全球金融中心心脏，和铜牛合影！</span></div><span class="wi-status">✅</span>
+<div class="wish-detail">
+<div class="wd-section"><div class="wd-title">🐂 华尔街打卡指南</div>
+Charging Bull（铜牛）其实不在华尔街上，而是在Broadway和Morris St的交叉口（Bowling Green公园旁）。雕塑家Arturo Di Modica在1989年的一个深夜偷偷把它放在纽交所门口，作为对美国人韧性和勇气的致敬。后来被搬到了现在的位置。</div>
+<div class="wd-fun">✨ 有趣的事：据说摸铜牛的鼻子会带来好运，摸牛角会带来力量，而摸牛...后面那个部位据说会带来财运（真的很多人摸，那个部位被摸得最光亮😂）。拍照的人会很多，建议早上去人相对少。旁边还有一个"无畏女孩"(Fearless Girl)雕像，原本对着铜牛，现在搬到了纽交所门口。</div>
+<div class="wd-tip">💡 拍照建议：一个人负责站在铜牛旁边，另一个人蹲低角度仰拍，把铜牛和人都拍全。背景是Broadway的建筑很有气势。</div>
+</div></div>
+
+<div class="wish-item" onclick="this.classList.toggle('open')"><span class="emoji">🥪</span><div class="wi-text"><b>吃地道Subway <span class="wi-arrow">▶</span></b><br>MET附近 (3/23午餐)<br><span class="wi-when">推荐 Italian BMT 或 Steak & Cheese</span></div><span class="wi-status">✅</span>
+<div class="wish-detail">
+<div class="wd-section"><div class="wd-title">🥪 Subway点餐全流程</div>
+① <b>选面包</b>：Italian(白面包最经典) / Wheat(全麦健康) / Italian Herbs & Cheese(芝士香草味最香!推荐!) / Wrap(卷饼)<br>
+② <b>选尺码</b>：6-inch(半份够一人) / Footlong(一英尺整份适合饭量大的)<br>
+③ <b>选肉</b>：Italian BMT(意大利腊肉组合最经典!) / Steak & Cheese(牛排芝士超满足) / Chicken Teriyaki(照烧鸡甜口)<br>
+④ <b>选芝士</b>：American / Provolone / Pepper Jack(微辣推荐!)<br>
+⑤ 店员问"Toasted?"(要烤吗) → 说"Yes please!"烤过更香<br>
+⑥ <b>选蔬菜</b>：Lettuce/Tomato/Cucumber/Onion/Jalapeño... 全加说"Everything"<br>
+⑦ <b>选酱</b>：Ranch(奶香) / Chipotle Southwest(烟熏辣最受欢迎!) / Honey Mustard(蜂蜜芥末)<br>
+⑧ "For here or to go?" → "For here"堂食 / "To go"带走</div>
+<div class="wd-save">💰 省钱攻略：6-inch footlong价格差不了多少，footlong性价比更高两人分！Subway App上经常有买一送一或$6.99 footlong的优惠券，可以提前下载看看。Combo(套餐)加饮料+薯片比单点便宜$2-3。</div>
+<div class="wd-fun">✨ Subway是全球门店最多的快餐品牌（比麦当劳还多！），但在中国的Subway跟美国的味道差很多。美国Subway的面包是现烤的，闻着就香！这是一种非常"美国日常"的体验——美国人从小吃到大的午餐。</div>
+</div></div>
+</div>
+
+<div class="wish-card wang"><div class="wish-name">👩 WJ</div>
+
+<div class="wish-item" onclick="this.classList.toggle('open')"><span class="emoji">🎭</span><div class="wi-text"><b>看Hamilton音乐剧 <span class="wi-arrow">▶</span></b><br>3/25 1pm日场<br><span class="wi-when">百老汇封神之作</span></div><span class="wi-status">✅</span>
+<div class="wish-detail">
+<div class="wd-section"><div class="wd-title">🎭 Hamilton 观演指南</div>
+Hamilton是2015年以来百老汇最轰动的作品，用Hip-Hop/R&B/Pop音乐讲述美国开国元勋Alexander Hamilton的故事。全剧无白人演员（刻意用有色人种演白人角色），是对美国建国故事的当代重新诠释。即使英语不够好，音乐本身的能量也会让你起鸡皮疙瘩！</div>
+<div class="wd-save">💰 省钱攻略：我们买的是3/25周三1pm日场(matinee)，比周末晚场便宜不少！如果还没买票，可以试试：① Ham4Ham每日抽签$10票(app lottery) ② TKTS半价亭(Times Square 47th St) ③ SeatGeek/StubHub有时有低价转让票。日场通常比晚场便宜$30-80。</div>
+<div class="wd-fun">✨ 演出前可以做的准备：在YouTube搜"Hamilton Original Cast Recording"先听一遍原声带，熟悉旋律后现场体验会翻倍！最火的几首："My Shot""The Room Where It Happens""Wait For It"。中场休息时剧院有卖Hamilton周边（T恤/马克杯/海报），很好的纪念品！看完之后你会一整天哼着"I am not throwing away my shot~"</div>
+<div class="wd-tip">💡 注意事项：提前30min到剧院(12:30)排队入场。手机必须静音，演出中禁止拍照录像。中场休息约15min，可以上洗手间/买周边。演出约2h45min，15:45左右散场。</div>
+</div></div>
+
+<div class="wish-item" onclick="this.classList.toggle('open')"><span class="emoji">🛍️</span><div class="wi-text"><b>Outlet买衣服 <span class="wi-arrow">▶</span></b><br>Jersey Gardens (3/22) — Blazer+RL Polo+帽子+冬装<br><span class="wi-when">Poster战袍一步到位</span></div><span class="wi-status">✅</span>
+<div class="wish-detail">
+<div class="wd-save">💰 省钱攻略：Jersey Gardens在New Jersey，买衣服鞋子完全免税（NJ对服装免Sales Tax）！进门先拿coupon book（额外10-15% off）。Ralph Lauren Outlet的polo衫国内专柜¥800+，这里~$55（约¥400）。J.Crew/Banana Republic的blazer国内¥2000+，Outlet $50-100。Columbia冬装外套买了直接穿上——纽约3月还是冷的！</div>
+<div class="wd-fun">✨ 学术会议穿搭小窍门：Blazer+好的polo衫+深色牛仔裤+白球鞋 = 完美的Smart Casual学术会议look。做Poster展示时穿这套会显得既专业又不过分正式。很多美国教授也是这么穿的。</div>
+<div class="wd-tip">💡 "I'm looking for a blazer for a work event. Something smart casual." / "Does this come in other colors?" / "I'm a size [M/L], could you help me find the right fit?"</div>
+</div></div>
+
+<div class="wish-item" onclick="this.classList.toggle('open')"><span class="emoji">🌸</span><div class="wi-text"><b>Le Labo纽约限定香水 <span class="wi-arrow">▶</span></b><br>3/23 SoHo附近 或 3/25早上<br><span class="wi-when">全球仅纽约有售！$82-95</span></div><span class="wi-status">✅</span>
+<div class="wish-detail">
+<div class="wd-section"><div class="wd-title">🌸 Le Labo City Exclusive系列</div>
+Le Labo的City Exclusive系列是全球限定——每个城市有一款独家香水，只能在那个城市的门店买到。纽约的是Tubereuse 40（晚香玉），是整个系列里最受欢迎的之一！浓郁的晚香玉花香，带一点奶油感和温暖的麝香底调。</div>
+<div class="wd-save">💰 省钱攻略：15ml旅行装$82-95，比50ml正装($295)划算得多作为体验装或送礼。Le Labo门店可以免费要sample（小样），进去跟店员说 "Could I try a few samples?" 他们会很乐意给你几个试用装带走。不用不好意思！这是Le Labo的文化。</div>
+<div class="wd-fun">✨ Le Labo的每一瓶香水都是在门店现场手工灌装+贴标签的，标签上会印上你的名字和日期！这是非常special的体验——你的香水是独一无二的。店员会问你 "What name would you like on the label?" 可以写自己的名字、朋友的名字、或者任何你想写的话。</div>
+<div class="wd-tip">💡 推荐去West Village或Nolita门店，氛围比较好。如果不确定喜不喜欢Tubereuse 40，可以先要sample试戴一天再决定是否购买。Le Labo的Santal 33也是大爆款但不是纽约限定（全球都能买）。</div>
+</div></div>
+
+<div class="wish-item" onclick="this.classList.toggle('open')"><span class="emoji">🏛️</span><div class="wi-text"><b>MET+MoMA+Glossier+High Line+Brooklyn Bridge <span class="wi-arrow">▶</span></b><br>3/23-25 分散<br><span class="wi-when">文化艺术+美妆+空中花园+天际线</span></div><span class="wi-status">✅</span>
+<div class="wish-detail">
+<div class="wd-section"><div class="wd-title">🏛️ 文化体验精华</div>
+<b>MET</b> — 花半天就好，重点看：Temple of Dendur(埃及神庙)、European Paintings(莫奈梵高)、Arms & Armor(铠甲厅超酷)。MET Store的书签/明信片/复刻饰品是高性价比纪念品。<br><br>
+<b>Glossier SoHo</b> — 整个空间就是粉色INS风打卡圣地。Cloud Paint(腮红)和Boy Brow(眉胶)是明星单品。<br><br>
+<b>High Line</b> — 从34th St入口往南走最佳，一路可以看到Hudson River和Chelsea的艺术画廊。春天刚好有些花开了！<br><br>
+<b>Brooklyn Bridge</b> — 从Brooklyn往Manhattan方向走，天际线从远到近越来越壮观！</div>
+<div class="wd-save">💰 MET是"建议捐款"制，理论上可以付任何金额（包括$0），但$30是建议价。MoMA Design Store不用买MoMA门票就能进！High Line和Brooklyn Bridge都完全免费。Glossier的Balm Dotcom($14)和Boy Brow($18)是性价比最高的入门款。</div>
+<div class="wd-fun">✨ 在Brooklyn Bridge上走到中间偏Manhattan那一侧停下来，回头看Brooklyn，再转身看Manhattan——这个角度是无数电影的经典画面。High Line上有几个"观景窗"（框起来的大玻璃窗），透过窗户看城市街道的视角很特别，适合拍照！</div>
+</div></div>
+
+<div class="wish-item" onclick="this.classList.toggle('open')"><span class="emoji">🌶️</span><div class="wi-text"><b>吃正宗川菜 <span class="wi-arrow">▶</span></b><br>Szechuan Gourmet 或 The Best Sichuan (3/21晚)<br><span class="wi-when">米其林推荐！酒店走路5-8min</span></div><span class="wi-status">✅</span>
+<div class="wish-detail">
+<div class="wd-section"><div class="wd-title">🌶️ 纽约川菜推荐</div>
+<b>Szechuan Gourmet</b> — 米其林推荐！Bryant Park附近，安静的街道上藏着纽约最好的川菜之一。2018年大火后重建，味道依旧惊艳。招牌：水煮鱼(Braised Fish in Chili)、夫妻肺片、椒盐虾。<br><br>
+<b>The Best Sichuan</b> — 47 W 39th St，离酒店更近(走5min)！环境现代豪华，装修很讲究。招牌：担担面、干锅牛肉、重庆辣子鸡。厨师是正宗成都人，Bernie Sanders都专门来吃过。</div>
+<div class="wd-save">💰 省钱攻略：中午lunch special比晚上便宜$5-10，但我们安排在晚上（第一天到想吃热乎的）。4个人点：一份水煮鱼/酸菜鱼(大份够4人) + 一份麻婆豆腐 + 一份干煸四季豆 + 米饭 + 担担面，人均$25-35很满足。川菜份量大！别点太多。</div>
+<div class="wd-fun">✨ 在纽约吃川菜是一种特别的体验——你在全世界最cosmopolitan的城市里，吃着家乡味道的麻辣！如果你觉得不够辣，可以跟服务员说 "Extra spicy please, we like it really hot" 他们通常会给你加辣。纽约的川菜馆服务员很多是中国人，可以直接说中文点餐！</div>
+<div class="wd-tip">💡 如果不确定去哪家，可以到了纽约后看Google Maps评分和实时等位情况再决定。两家都不需要提前预约（工作日晚上），walk-in就行。</div>
+</div></div>
+</div>
+
+</div>
+
+
+
+<div class="panel" id="nearby">
+<div style="font-size:.85em;color:var(--muted);margin-bottom:12px">空闲时间随时去逛！步行20分钟内的好去处</div>
+
+<div class="nearby-hotel-title nyc-title">🗽 纽约 Sheraton 酒店周边 (53rd St & 7th Ave)</div>
+
+<div class="nearby-cat-divider cat-sight">🏛️ 景点打卡</div>
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🎨</div><div class="nearby-info">
+<div class="nearby-name">MoMA 现代艺术博物馆 <span class="nearby-cat">好看</span><span class="na">▶</span></div>
+<div class="nearby-brief">世界顶级现代艺术馆 梵高/毕加索/莫奈</div>
+<div class="nearby-meta"><span>📍 11 W 53rd St</span><span>🚶 2min</span><span>💰 $25</span><span>🕐 10:30-17:30</span></div>
+</div></div>
+<div class="nearby-detail">就在酒店旁！53rd St走过去2分钟。周五延长到21:00。梵高《星夜》、莫奈《睡莲》、毕加索《亚维农少女》都在这。MoMA Design Store可以免票进入买设计周边。</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🏙️</div><div class="nearby-info">
+<div class="nearby-name">Rockefeller Center + Top of the Rock <span class="nearby-cat">好看</span><span class="na">▶</span></div>
+<div class="nearby-brief">Art Deco建筑群 观景台看帝国大厦全景</div>
+<div class="nearby-meta"><span>📍 45 Rockefeller Plaza</span><span>🚶 5min</span><span>💰 免费逛/$40观景</span><span>🕐 广场24h/观景台9-24</span></div>
+</div></div>
+<div class="nearby-detail">广场免费逛！看Art Deco建筑群和金色普罗米修斯雕像。Top of the Rock观景台$40可看帝国大厦+中央公园全景。Nintendo旗舰店也在这里。冬天有溜冰场（3月可能还开着）。</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">📚</div><div class="nearby-info">
+<div class="nearby-name">纽约公共图书馆 + Bryant Park <span class="nearby-cat">好看</span><span class="na">▶</span></div>
+<div class="nearby-brief">知识殿堂+城市绿洲 建筑本身就是艺术品</div>
+<div class="nearby-meta"><span>📍 42nd St & 5th Ave</span><span>🚶 12min</span><span>💰 免费</span><span>🕐 图书馆10-20/公园7-23</span></div>
+</div></div>
+<div class="nearby-detail">Beaux-Arts建筑杰作！大阅览室(Rose Reading Room)超壮观。Bryant Park就在图书馆后面，有免费Wi-Fi、椅子可坐，很多上班族在这午休。冬天有Holiday Market圣诞市集（3月可能还有尾声）。</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🏢</div><div class="nearby-info">
+<div class="nearby-name">Grand Central Terminal 中央车站 <span class="nearby-cat">好看</span><span class="na">▶</span></div>
+<div class="nearby-brief">Beaux-Arts建筑瑰宝 天花板星象图</div>
+<div class="nearby-meta"><span>📍 42nd St & Park Ave</span><span>🚶 15min</span><span>💰 免费</span><span>🕐 5:15am-2am</span></div>
+</div></div>
+<div class="nearby-detail">美国最美的火车站！巨大的主厅天花板绘有星座图，Beaux-Arts建筑太壮观了。地下有美食广场(Grand Central Market)。别忘了找"Whispering Gallery"——对角线站着可以听到对面的悄悄话！免费进入随时去。</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🌳</div><div class="nearby-info">
+<div class="nearby-name">Central Park 南端 <span class="nearby-cat">好玩</span><span class="na">▶</span></div>
+<div class="nearby-brief">全球最著名城市公园 散步放松</div>
+<div class="nearby-meta"><span>📍 59th St入口</span><span>🚶 8min</span><span>💰 免费</span><span>🕐 6am-1am</span></div>
+</div></div>
+<div class="nearby-detail">沿7th Ave往北走到59th St就是入口。南端有Wollman Rink溜冰场、Central Park Zoo动物园($14)、The Pond湖。不用走太深，南端走走就很美。适合早起或傍晚散步。</div>
+</div>
+
+<div class="nearby-cat-divider cat-food">🍽️ 美食推荐</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🌯</div><div class="nearby-info">
+<div class="nearby-name">Halal Guys <span class="nearby-cat">好吃</span><span class="na">▶</span></div>
+<div class="nearby-brief">纽约传奇街头美食！Chicken over Rice $9</div>
+<div class="nearby-meta"><span>📍 53rd & 6th Ave</span><span>🚶 3min</span><span>💰 $9-12</span><span>🕐 10am-4am</span></div>
+</div></div>
+<div class="nearby-detail">纽约最传奇的街头美食摊！Chicken over Rice配白酱+辣酱，$9管饱。营业到凌晨4点！晚上饿了可以去买（但注意安全，最好结伴快去快回）。排队的话说明今天特别新鲜。</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🍕</div><div class="nearby-info">
+<div class="nearby-name">Joe's Pizza <span class="nearby-cat">好吃</span><span class="na">▶</span></div>
+<div class="nearby-brief">纽约最iconic薄饼披萨 $3.50一片</div>
+<div class="nearby-meta"><span>📍 W 40th附近/多家</span><span>🚶 8min</span><span>💰 $3.50/片</span><span>🕐 10am-4am</span></div>
+</div></div>
+<div class="nearby-detail">纽约风格薄脆披萨的标杆！$3.50一片站着吃，这就是最纽约的体验。也营业到很晚。一片cheese pizza就能满足。蜘蛛侠电影里Peter Parker打工的那家就是以Joe's为原型。</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🌶️</div><div class="nearby-info">
+<div class="nearby-name">The Best Sichuan 川菜 <span class="nearby-cat">好吃</span><span class="na">▶</span></div>
+<div class="nearby-brief">酒店最近的正宗川菜！水煮鱼/担担面</div>
+<div class="nearby-meta"><span>📍 47 W 39th St</span><span>🚶 5min</span><span>💰 $20-35/人</span><span>🕐 11:30-22:30</span></div>
+</div></div>
+<div class="nearby-detail">离酒店最近的正宗川菜！服务员很多中国人可以说中文。推荐水煮鱼/干锅牛肉/担担面/重庆辣子鸡。午餐套餐$15-18比晚餐便宜。想念家乡味道了随时来。</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🌶️</div><div class="nearby-info">
+<div class="nearby-name">Blue Willow 夜来湘 <span class="nearby-cat">好吃</span><span class="na">▶</span></div>
+<div class="nearby-brief">正宗湘菜！剁椒鱼头/小炒黄牛肉</div>
+<div class="nearby-meta"><span>📍 W 56th St</span><span>🚶 5min</span><span>💰 $20-35/人</span><span>🕐 11:30-22:00</span></div>
+</div></div>
+<div class="nearby-detail">酒店附近最好的湘菜！剁椒鱼头/小炒黄牛肉/外婆菜 地道湖南味。辣度正宗不手软。走路5分钟就到。</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🍜</div><div class="nearby-info">
+<div class="nearby-name">Xi'an Famous Foods 西安名吃 <span class="nearby-cat">好吃</span><span class="na">▶</span></div>
+<div class="nearby-brief">手撕面+肉夹馍 纽约华人快餐之王</div>
+<div class="nearby-meta"><span>📍 Times Sq附近多家</span><span>🚶 5min</span><span>💰 $10-15</span><span>🕐 11am-21:00</span></div>
+</div></div>
+<div class="nearby-detail">Spicy Cumin Lamb面是招牌！手撕面(Liang Pi凉皮)+肉夹馍组合$13-15。纽约华人快餐之王，Anthony Bourdain也推荐过。快速解决一顿中式午餐的最佳选择。</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🍔</div><div class="nearby-info">
+<div class="nearby-name">Shake Shack <span class="nearby-cat">好吃</span><span class="na">▶</span></div>
+<div class="nearby-brief">纽约本土精品汉堡 8th Ave有分店</div>
+<div class="nearby-meta"><span>📍 44th & 8th Ave</span><span>🚶 5min</span><span>💰 $12-18</span><span>🕐 10:30-23:00</span></div>
+</div></div>
+<div class="nearby-detail">行程里3/24去了City Hall店，但酒店旁边8th Ave也有一家！随时想吃都可以来。ShackBurger+Cheese Fries+Concrete(冰淇淋)是标配。</div>
+</div>
+
+<div class="nearby-cat-divider cat-shop">🛒 购物补给</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🛒</div><div class="nearby-info">
+<div class="nearby-name">Trader Joe's <span class="nearby-cat">好买</span><span class="na">▶</span></div>
+<div class="nearby-brief">美国特色超市 帆布袋/零食/调味料</div>
+<div class="nearby-meta"><span>📍 675 8th Ave</span><span>🚶 5min</span><span>💰 $3-30</span><span>🕐 8am-22:00</span></div>
+</div></div>
+<div class="nearby-detail">美国最受欢迎的特色超市！帆布袋$3-5是文化符号、Everything But The Bagel调味料必买、Cookie Butter饼干酱、Dark Chocolate Peanut Butter Cups。零食种类多到逛不完。可以多来几次慢慢买。</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">💊</div><div class="nearby-info">
+<div class="nearby-name">CVS / Walgreens <span class="nearby-cat">好买</span><span class="na">▶</span></div>
+<div class="nearby-brief">美国药妆店 保健品/日用品/零食</div>
+<div class="nearby-meta"><span>📍 Times Sq附近多家</span><span>🚶 3min</span><span>💰 视购买</span><span>🕐 7am-24:00</span></div>
+</div></div>
+<div class="nearby-detail">美国版屈臣氏！保健品（鱼油/氨糖/维生素/Olay）性价比超高，经常买一送一。还有零食、饮料、日用品。24小时或很晚关门，随时需要随时去。</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">📖</div><div class="nearby-info">
+<div class="nearby-name">Midtown Comics Times Square <span class="nearby-cat">好逛</span><span class="na">▶</span></div>
+<div class="nearby-brief">全美最大漫画店 漫画/手办/周边</div>
+<div class="nearby-meta"><span>📍 200 W 40th St</span><span>🚶 5min</span><span>💰 $1-50</span><span>🕐 周一-六8am-0am/周日12-20</span></div>
+</div></div>
+<div class="nearby-detail">全美最大漫画店！Invincible/Marvel/DC/日漫全有。$0.99起的特价漫画区可以淘宝。手办/T恤/海报也很多。营业到午夜（周一-六），晚上没事可以去逛逛。</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">👕</div><div class="nearby-info">
+<div class="nearby-name">Uniqlo 旗舰店 <span class="nearby-cat">好买</span><span class="na">▶</span></div>
+<div class="nearby-brief">日本国民品牌 基础款之王 价格和日本差不多</div>
+<div class="nearby-meta"><span>📍 666 5th Ave (53rd St)</span><span>🚶 3min</span><span>💰 $10-80</span><span>🕐 10am-21:00</span></div>
+</div></div>
+<div class="nearby-detail">就在酒店旁5th Ave上！三层楼的旗舰店，比国内Uniqlo大很多。HeatTech保暖内衣/AIRism系列/UT联名T恤都值得买。价格和日本差不多，比国内便宜不少。大码也有到XXL。</div>
+</div>
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">👗</div><div class="nearby-info">
+<div class="nearby-name">H&M 旗舰店 <span class="nearby-cat">好买</span><span class="na">▶</span></div>
+<div class="nearby-brief">快时尚 款式多价格低 随时逛随时买</div>
+<div class="nearby-meta"><span>📍 505 5th Ave (42nd St)</span><span>🚶 10min</span><span>💰 $5-60</span><span>🕐 10am-21:00</span></div>
+</div></div>
+<div class="nearby-detail">瑞典快时尚巨头！款式更新快，价格亲民。T恤$5起、牛仔裤$20起、外套$30起。经常有clearance rack打折区，$3-5能淘到好东西。Times Square附近也有分店走路5min。</div>
+</div>
+
+<div class="nearby-cat-divider cat-exp">🎭 文化体验</div>
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🎭</div><div class="nearby-info">
+<div class="nearby-name">Broadway 百老汇剧院区 <span class="nearby-cat">好体验</span><span class="na">▶</span></div>
+<div class="nearby-brief">全球戏剧中心 40多家剧院</div>
+<div class="nearby-meta"><span>📍 41st-54th St之间</span><span>🚶 1-10min</span><span>💰 TKTS半价$50起</span><span>🕐 各剧不同</span></div>
+</div></div>
+<div class="nearby-detail">酒店就在剧院区中心！除了Hamilton，还可以去TKTS半价亭(47th St红台阶)碰运气买当天的折扣票。热门剧：Wicked/The Lion King/Chicago/Phantom。走在街上就能看到各种灯光招牌很美。</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🎵</div><div class="nearby-info">
+<div class="nearby-name">Carnegie Hall 卡内基音乐厅 <span class="nearby-cat">好体验</span><span class="na">▶</span></div>
+<div class="nearby-brief">世界最著名音乐厅 建筑外观免费看</div>
+<div class="nearby-meta"><span>📍 57th St & 7th Ave</span><span>🚶 4min</span><span>💰 免费看外观/演出$30+</span><span>🕐 导览11:30/12:30/14:00</span></div>
+</div></div>
+<div class="nearby-detail">就在酒店往北走4分钟！始建于1891年，世界最著名音乐厅之一。外观免费看，建筑本身很壮观。如果有晚场演出也可以碰运气买折扣票。导览Tour $20，约1小时。</div>
+</div>
+
+
+
+<div class="nearby-hotel-title bos-title">🦞 波士顿 Hyatt 酒店周边 (Cambridge, Memorial Dr)</div>
+
+<div class="nearby-cat-divider cat-sight">🏛️ 景点校园</div>
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🎓</div><div class="nearby-info">
+<div class="nearby-name">MIT 校园 <span class="nearby-cat">好逛</span><span class="na">▶</span></div>
+<div class="nearby-brief">世界顶尖理工学府 建筑超酷</div>
+<div class="nearby-meta"><span>📍 77 Massachusetts Ave</span><span>🚶 15min</span><span>💰 免费</span><span>🕐 校园24h</span></div>
+</div></div>
+<div class="nearby-detail">沿Memorial Dr走15min就到。标志性的Great Dome(大穹顶)、Stata Center(Frank Gehry设计的歪歪扭扭建筑超酷)、MIT Media Lab都值得看。MIT COOP书店在Kendall Square旁。会议就在这里！</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🏛️</div><div class="nearby-info">
+<div class="nearby-name">Harvard 校园 + Harvard Square <span class="nearby-cat">好逛</span><span class="na">▶</span></div>
+<div class="nearby-brief">全球最顶尖学府 书店/咖啡/购物</div>
+<div class="nearby-meta"><span>📍 Harvard Sq</span><span>🚶 Red Line 15min</span><span>💰 免费</span><span>🕐 校园24h/商店10-20</span></div>
+</div></div>
+<div class="nearby-detail">Red Line坐两站到Harvard站。校园免费漫步，摸John Harvard铜像左脚求好运。Harvard Square有大量书店/咖啡馆/特色小店。Harvard COOP买周边。如果有空闲半天可以去！</div>
+</div>
+
+<div class="nearby-cat-divider cat-sight">🏞️ 自然景观</div>
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🏞️</div><div class="nearby-info">
+<div class="nearby-name">Charles River 查尔斯河步道 <span class="nearby-cat">好玩</span><span class="na">▶</span></div>
+<div class="nearby-brief">酒店门口！跑步/散步/看波士顿天际线</div>
+<div class="nearby-meta"><span>📍 酒店门口</span><span>🚶 0min</span><span>💰 免费</span><span>🕐 24h</span></div>
+</div></div>
+<div class="nearby-detail">酒店就在查尔斯河边！出门就是步道。往东走到MIT(15min)、往西走到Harvard Bridge都很美。早起晨跑或傍晚散步看波士顿天际线+日落，是酒店最大的福利。Hyatt还提供免费自行车给客人用！</div>
+</div>
+
+<div class="nearby-cat-divider cat-food">🍽️ 美食推荐</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🌶️</div><div class="nearby-info">
+<div class="nearby-name">Sumiao Hunan Kitchen 素描湘 <span class="nearby-cat">好吃</span><span class="na">▶</span></div>
+<div class="nearby-brief">★米其林推荐湘菜！剁椒鱼头/外婆菜</div>
+<div class="nearby-meta"><span>📍 270 Third St, Kendall Sq</span><span>🚶 18min</span><span>💰 $20-35/人</span><span>🕐 周二-日11:30-22:00(周一休)</span></div>
+</div></div>
+<div class="nearby-detail">波士顿最好的中餐之一！米其林推荐+Boston Magazine最佳中餐。剁椒鱼头/小炒黄牛肉/外婆菜/孜然羊排都是招牌。环境很美有现代设计感，周三四晚有现场爵士乐。注意周一休息！</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🌶️</div><div class="nearby-info">
+<div class="nearby-name">5 Spices House 五香居 <span class="nearby-cat">好吃</span><span class="na">▶</span></div>
+<div class="nearby-brief">MIT旁最好的川菜 麻辣香锅/回锅肉</div>
+<div class="nearby-meta"><span>📍 Kendall Sq附近</span><span>🚶 18min</span><span>💰 $12-20/人</span><span>🕐 11am-21:30</span></div>
+</div></div>
+<div class="nearby-detail">MIT学生最爱的川菜！麻辣香锅(Mala Dry Pot)可以自选配料，回锅肉/干煸四季豆/水煮肉片都很正宗。量大便宜，性价比超高。午餐去特别合适。</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🍜</div><div class="nearby-info">
+<div class="nearby-name">Bon Me 越南快餐 <span class="nearby-cat">好吃</span><span class="na">▶</span></div>
+<div class="nearby-brief">Kendall Sq最受欢迎快餐 Banh Mi三明治</div>
+<div class="nearby-meta"><span>📍 Kendall Sq</span><span>🚶 18min</span><span>💰 $10-15</span><span>🕐 11am-20:00</span></div>
+</div></div>
+<div class="nearby-detail">波士顿本土越南风味快餐品牌！Banh Mi三明治(法棍+越南料)和Rice Bowl最受欢迎。辣度可选。快速解决午餐的好选择。</div>
+</div>
+
+<div class="nearby-cat-divider cat-shop">🛒 购物书店</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">📚</div><div class="nearby-info">
+<div class="nearby-name">MIT COOP 书店 <span class="nearby-cat">好买</span><span class="na">▶</span></div>
+<div class="nearby-brief">MIT官方书店 帽衫/周边/学术书</div>
+<div class="nearby-meta"><span>📍 Kendall/MIT站旁</span><span>🚶 18min</span><span>💰 帽衫$40-60</span><span>🕐 周一-六10-18/周日12-17</span></div>
+</div></div>
+<div class="nearby-detail">MIT官方书店！帽衫/T恤/马克杯/笔记本都有MIT logo。学术书区也值得逛。买件MIT帽衫回去就是学霸同款。🦙MM的第三家书店！</div>
+</div>
+
+
+<div class="nearby-cat-divider cat-exp">🎭 休闲好去处</div>
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🍺</div><div class="nearby-info">
+<div class="nearby-name">Paperback Tavern (酒店内) <span class="nearby-cat">好体验</span><span class="na">▶</span></div>
+<div class="nearby-brief">Hyatt自带餐厅酒吧 查尔斯河景观</div>
+<div class="nearby-meta"><span>📍 酒店2楼</span><span>🚶 0min</span><span>💰 $15-30/人</span><span>🕐 7am-23:00</span></div>
+</div></div>
+<div class="nearby-detail">Hyatt自带的餐厅酒吧！坐在窗边看查尔斯河+波士顿天际线，点一杯鸡尾酒或一杯wine，配小食，结束忙碌的一天。早餐也不错，有pastry和咖啡。不想出门的时候就在这解决。</div>
+</div>
+
+
+<div class="nearby-card" onclick="this.classList.toggle('open')">
+<div class="nearby-top"><div class="nearby-emoji">🎓</div><div class="nearby-info">
+<div class="nearby-name">Central Square <span class="nearby-cat">好吃好逛</span><span class="na">▶</span></div>
+<div class="nearby-brief">酒店最近的热闹街区 餐厅/酒吧/咖啡</div>
+<div class="nearby-meta"><span>📍 Massachusetts Ave</span><span>🚶 10min</span><span>💰 视消费</span><span>🕐 各店不同</span></div>
+</div></div>
+<div class="nearby-detail">从酒店走10分钟到Central Square！这里是Cambridge最有活力的街区之一。Veggie Galaxy(美式diner)/Dumpling House(饺子!)/各种咖啡馆和酒吧。比Kendall Sq更有生活气息。晚上也很安全热闹。</div>
+</div>
+
+</div>
+
+
+
+<div class="panel" id="xhs">
+<div style="font-size:.85em;color:var(--muted);margin-bottom:16px">小红书纽约攻略 vs 我们的行程</div>
+<div class="xhs-card"><div class="xhs-status">✅</div><div class="xhs-info"><h4>9/11 国家纪念馆</h4><p>已插入3/23华尔街→Ferry路上，步行10min顺路！户外免费。</p><span class="xhs-badge badge-yes">★ 已采纳</span></div></div>
+<div class="xhs-card"><div class="xhs-status">✅</div><div class="xhs-info"><h4>High Line 高线公园</h4><p>安排在3/24早上，原来上午空着刚好！</p><span class="xhs-badge badge-yes">★ 已采纳</span></div></div>
+<div class="xhs-card"><div class="xhs-status">✅</div><div class="xhs-info"><h4>华尔街/Brooklyn Bridge/MET/SoHo/中央公园</h4><p>原本就在行程里！英雄所见略同。</p><span class="xhs-badge badge-yes">早已安排</span></div></div>
+<div class="xhs-card"><div class="xhs-status">📌</div><div class="xhs-info"><h4>Hudson Yards · Vessel/The Edge</h4><p>High Line北端就是！Vessel免费拍照，The Edge $44可选。</p><span class="xhs-badge badge-opt">Optional · 3/25</span></div></div>
+<div class="xhs-card"><div class="xhs-status">📌</div><div class="xhs-info"><h4>帝国大厦</h4><p>Macy's旁34th St！逛完有时间可上去，$44。</p><span class="xhs-badge badge-opt">Optional · 3/24</span></div></div>
+<div class="xhs-card"><div class="xhs-status">📌</div><div class="xhs-info"><h4>Top of the Rock</h4><p>Nintendo旁！但3/21凌晨到太累。精力好可白天去。</p><span class="xhs-badge badge-opt">Optional · 3/21</span></div></div>
+<div class="xhs-card"><div class="xhs-status">📌</div><div class="xhs-info"><h4>圣帕特里克大教堂 + 纽约公共图书馆</h4><p>5th Ave上免费路过看看。</p><span class="xhs-badge badge-opt">Optional · 3/21顺路</span></div></div>
+<div class="xhs-card"><div class="xhs-status">📌</div><div class="xhs-info"><h4>Chinatown</h4><p>离SoHo走10min，想吃中餐可去。</p><span class="xhs-badge badge-opt">Optional · 3/23</span></div></div>
+<div class="xhs-card"><div class="xhs-status">❌</div><div class="xhs-info"><h4>联合国总部</h4><p>位置偏，需专门跑一趟，时间不够。</p><span class="xhs-badge badge-no">跳过</span></div></div>
+</div>
+
+
+<div class="panel" id="phrases">
+<div class="phrase-cat">🛍️ 购物</div>
+<div class="phrase-row"><div class="en">Thanks! I'm just browsing.</div><div class="cn">谢谢，先随便看看</div></div>
+<div class="phrase-row"><div class="en">Do you have this in size XL?</div><div class="cn">有XL码吗？</div></div>
+<div class="phrase-row"><div class="en">Where's the fitting room?</div><div class="cn">试衣间在哪？</div></div>
+<div class="phrase-row"><div class="en">Is there any sale going on?</div><div class="cn">现在有打折吗？</div></div>
+<div class="phrase-row"><div class="en">Do you have a coupon book?</div><div class="cn">有优惠券册子吗？</div></div>
+<div class="phrase-row"><div class="en">I'll take these. Card, please.</div><div class="cn">我要这些，刷卡</div></div>
+<div class="phrase-cat">🍽️ 餐厅</div>
+<div class="phrase-row"><div class="en">Four, please. Under Lin.</div><div class="cn">四个人，名字Lin</div></div>
+<div class="phrase-row"><div class="en">Water, no ice please.</div><div class="cn">水，不要冰</div></div>
+<div class="phrase-row"><div class="en">What do you recommend?</div><div class="cn">有什么推荐？</div></div>
+<div class="phrase-row"><div class="en">I'll go with that.</div><div class="cn">就这个吧</div></div>
+<div class="phrase-row"><div class="en">Could we get the check?</div><div class="cn">买单</div></div>
+<div class="phrase-row"><div class="en">To go, please.</div><div class="cn">打包带走</div></div>
+<div class="phrase-cat">🚗 交通</div>
+<div class="phrase-row"><div class="en">Yep, that's me!</div><div class="cn">对，是我！(Uber确认)</div></div>
+<div class="phrase-row"><div class="en">Right here is perfect. Thanks!</div><div class="cn">就停这儿，谢谢！</div></div>
+<div class="phrase-row"><div class="en">Could you point me to the subway?</div><div class="cn">地铁站怎么走？</div></div>
+<div class="phrase-cat">🏨 酒店</div>
+<div class="phrase-row"><div class="en">Checking in, name is...</div><div class="cn">办入住，名字是...</div></div>
+<div class="phrase-row"><div class="en">Could I store my luggage?</div><div class="cn">能寄存行李吗？</div></div>
+<div class="phrase-row"><div class="en">What's the WiFi password?</div><div class="cn">WiFi密码？</div></div>
+<div class="phrase-cat">✅ 万能回应</div>
+<div class="phrase-row"><div class="en">Sounds good!</div><div class="cn">好的！</div></div>
+<div class="phrase-row"><div class="en">Got it!</div><div class="cn">明白了！</div></div>
+<div class="phrase-row"><div class="en">No worries!</div><div class="cn">没关系！</div></div>
+<div class="phrase-row"><div class="en">Sorry, could you say that again?</div><div class="cn">能再说一遍吗？</div></div>
+<div class="phrase-cat">🎓 学术社交</div>
+<div class="phrase-row"><div class="en">Is this your first time at HSP?</div><div class="cn">第一次来HSP吗？</div></div>
+<div class="phrase-row"><div class="en">I'm in [advisor]'s lab.</div><div class="cn">我在XX实验室</div></div>
+<div class="phrase-row"><div class="en">That was a really interesting talk.</div><div class="cn">报告很有意思</div></div>
+<div class="phrase-row"><div class="en">Could you walk me through your poster?</div><div class="cn">介绍一下你的poster？</div></div>
+<div class="phrase-row"><div class="en">Great question!</div><div class="cn">好问题！(万能开头)</div></div>
+<div class="phrase-row"><div class="en">Could I grab your email?</div><div class="cn">能留个邮箱吗？</div></div>
+<div class="phrase-row"><div class="en">Mind if I join you guys?</div><div class="cn">介意我坐这吗？</div></div>
+<div class="phrase-cat">🚨 紧急</div>
+<div class="phrase-row"><div class="en">I need help. / Call 911!</div><div class="cn">我需要帮助/叫911！</div></div>
+<div class="phrase-row"><div class="en">I'm lost. / I don't feel well.</div><div class="cn">迷路了/不舒服</div></div>
+<div style="margin-top:20px;padding:16px;background:var(--card);border-radius:12px;box-shadow:var(--shadow)"><h4 style="font-size:.9em;margin-bottom:8px">💡 小费指南</h4><p style="font-size:.83em;color:var(--muted);line-height:1.8">正餐厅18-20% · 快餐/外带不用 · Uber在App里给 · 屏幕弹出直接点百分比</p></div>
+</div>
+<div class="panel" id="nearby">
+
+
+<div class="nb-hotel nb-nyc">🗽 纽约 Sheraton Times Square 周边 (811 7th Ave / 53rd St)</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🍜 Totto Ramen <span class="nb-arrow">▶</span></div><span class="nb-cat cat-eat">好吃</span></div>
+<div class="nb-meta"><span>📍 W 52nd St · 步行3min/200m</span><span>💰 $15-20/人</span><span>🕐 12:00-23:00</span></div>
+<div class="nb-detail">纽约最好的豚骨拉面之一！浓郁鸡白汤底配叉烧，座位不多经常排队但翻台快。推荐：Totto Ramen (招牌鸡白汤) + 溏心蛋追加。想快速吃碗热乎面的首选！</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🌶️ Blue Willow 夜来湘 <span class="nb-arrow">▶</span></div><span class="nb-cat cat-eat">好吃</span></div>
+<div class="nb-meta"><span>📍 W 56th St · 步行4min/300m</span><span>💰 $20-35/人</span><span>🕐 11:30-22:30</span></div>
+<div class="nb-detail">地道湘菜！剁椒鱼头/小炒黄牛肉/外婆菜炒肉 每道都是家乡味道。环境好价格合理，想吃辣的时候来这里准没错。中文服务无障碍。</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🌯 The Halal Guys <span class="nb-arrow">▶</span></div><span class="nb-cat cat-eat">好吃</span></div>
+<div class="nb-meta"><span>📍 53rd & 6th Ave · 步行3min/200m</span><span>💰 $9-12/人</span><span>🕐 10:00-04:00</span></div>
+<div class="nb-detail">纽约传奇街头美食！Chicken over Rice + 白酱黄酱辣酱三种选，$9管饱。凌晨4点还开着，任何时候饿了都能吃。排队是常态但很快。</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🍕 Joe's Pizza <span class="nb-arrow">▶</span></div><span class="nb-cat cat-eat">好吃</span></div>
+<div class="nb-meta"><span>📍 7th Ave/W 40th · 步行8min/600m</span><span>💰 $3.5/片</span><span>🕐 10:00-02:00</span></div>
+<div class="nb-detail">纽约最iconic的街头薄饼披萨！$3.5一片，站着吃两分钟解决。这就是"纽约style pizza"的定义——薄脆可折叠，芝士拉丝。</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">☕ Blue Bottle Coffee <span class="nb-arrow">▶</span></div><span class="nb-cat cat-cafe">好喝</span></div>
+<div class="nb-meta"><span>📍 W 54th St / Rockefeller · 步行5min/400m</span><span>💰 $5-8</span><span>🕐 7:00-19:00</span></div>
+<div class="nb-detail">精品咖啡界的Apple！极简空间+手冲咖啡。招牌New Orleans Iced Coffee(冷萃+焦糖牛奶)超好喝。早上出门路上买一杯！</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🎨 MoMA 纽约现代艺术博物馆 <span class="nb-arrow">▶</span></div><span class="nb-cat cat-see">好看</span></div>
+<div class="nb-meta"><span>📍 11 W 53rd St · 步行5min/350m</span><span>💰 $25/人 周五下午免费</span><span>🕐 10:30-17:30 周六到19:00</span></div>
+<div class="nb-detail">就在酒店旁！梵高星空/毕加索/安迪沃霍尔都在这里。MoMA Design Store不用买票就能进，各种设计周边可以买。周五下午4点后免费入场！</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🏙️ Top of the Rock 洛克菲勒观景台 <span class="nb-arrow">▶</span></div><span class="nb-cat cat-see">好看</span></div>
+<div class="nb-meta"><span>📍 30 Rockefeller Plaza · 步行8min/600m</span><span>💰 $40-44</span><span>🕐 9:00-24:00</span></div>
+<div class="nb-detail">全纽约最佳视野！正对帝国大厦+俯瞰Central Park。如果精力好想看夜景，日落前1小时去最值(白天→日落→夜景一次看全)。</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🎮 Midtown Comics <span class="nb-arrow">▶</span></div><span class="nb-cat cat-shop">好买</span></div>
+<div class="nb-meta"><span>📍 200 W 40th St · 步行8min/600m</span><span>💰 $3-50</span><span>🕐 周一-周六8:00-0:00 周日12:00-20:00</span></div>
+<div class="nb-detail">全美最大漫画店！漫画/手办/T恤/周边应有尽有。Invincible全系列有货。晚上12点才关门，逛完Broadway顺路来看看。</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🛍️ H&M / Gap / American Eagle <span class="nb-arrow">▶</span></div><span class="nb-cat cat-shop">好买</span></div>
+<div class="nb-meta"><span>📍 Times Sq · 步行5-8min/400-600m</span><span>💰 $10-60</span><span>🕐 9:00-23:00</span></div>
+<div class="nb-detail">Times Square旗舰店比普通店大几倍！营业到很晚。缺什么日用衣物可以随时补。H&M有$5-10的基础款。</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🍫 M&M's World / Hershey's <span class="nb-arrow">▶</span></div><span class="nb-cat cat-play">好玩</span></div>
+<div class="nb-meta"><span>📍 Times Sq · 步行6min/450m</span><span>💰 免费逛/$5-20买</span><span>🕐 10:00-23:00</span></div>
+<div class="nb-detail">M&M's可以定制印字巧克力($20左右)！选颜色→印文字→包装，独一无二的纽约纪念品。Hershey's有免费巧克力试吃+看巧克力制作。</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🌳 Central Park 南端 <span class="nb-arrow">▶</span></div><span class="nb-cat cat-see">好看</span></div>
+<div class="nb-meta"><span>📍 59th St入口 · 步行10min/700m</span><span>💰 免费</span><span>🕐 6:00-01:00</span></div>
+<div class="nb-detail">全世界最著名的城市公园！南端入口离酒店走路10分钟。3月的中央公园刚好spring blooming，可以看到早樱。清晨跑步或傍晚散步都很棒。</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">📚 Bryant Park + 纽约公共图书馆 <span class="nb-arrow">▶</span></div><span class="nb-cat cat-see">好看</span></div>
+<div class="nb-meta"><span>📍 42nd St & 6th Ave · 步行8min/600m</span><span>💰 免费</span><span>🕐 公园7:00-22:00 图书馆10:00-20:00</span></div>
+<div class="nb-detail">Bryant Park是Midtown的绿洲！有免费WiFi和椅子可以坐。旁边的纽约公共图书馆建筑本身就是艺术品，Rose Reading Room超震撼（免费进入）。</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">💆 Juvenex Spa <span class="nb-arrow">▶</span></div><span class="nb-cat cat-play">好体验</span></div>
+<div class="nb-meta"><span>📍 W 32nd St (Koreatown) · 步行15min/1km</span><span>💰 $50-80/人</span><span>🕐 24小时</span></div>
+<div class="nb-detail">24小时韩式汗蒸房！如果逛了一天累了想放松，这里有桑拿/热汤/按摩。Koreatown(32nd St)也有很多韩国烤肉和炸鸡店可以吃。</div>
+</div>
+
+<div class="nb-hotel nb-bos">🦞 波士顿 Hyatt Regency Cambridge 周边 (575 Memorial Dr / MIT附近)</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🌶️ Sumiao Hunan Kitchen 素描湘 <span class="nb-arrow">▶</span></div><span class="nb-cat cat-eat">好吃</span></div>
+<div class="nb-meta"><span>📍 270 Third St, Kendall Sq · 步行15min/1km</span><span>💰 $20-35/人</span><span>🕐 周二-周日11:30-22:00 周一休</span></div>
+<div class="nb-detail">米其林推荐+Boston Magazine最佳中餐！正宗湘菜：剁椒鱼头/小炒黄牛肉/外婆菜/孜然羊排。环境现代有live jazz。中国胃的绝对救赎！周三周四晚有现场音乐。</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🌶️ 5 Spices House 五香居 <span class="nb-arrow">▶</span></div><span class="nb-cat cat-eat">好吃</span></div>
+<div class="nb-meta"><span>📍 Mass Ave, Central Sq · 步行12min/850m</span><span>💰 $12-20/人</span><span>🕐 11:00-22:00</span></div>
+<div class="nb-detail">MIT旁最受欢迎的川菜！麻辣香锅自选配料超爽，回锅肉/干煸四季豆/水煮肉片都很正宗。学生最爱，量大价格实在。</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🍦 Toscanini's <span class="nb-arrow">▶</span></div><span class="nb-cat cat-eat">好吃</span></div>
+<div class="nb-meta"><span>📍 Kendall Sq / Central Sq · 步行12min/850m</span><span>💰 $5-8</span><span>🕐 11:00-23:00</span></div>
+<div class="nb-detail">被纽约时报评为"全美最好的冰淇淋"！1981年开业。口味超创意：Goat Cheese Honey/B3(焦糖黄油布朗尼)/Vienna Finger Cookie。每次去都有新口味！</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🥯 Mamaleh's Delicatessen <span class="nb-arrow">▶</span></div><span class="nb-cat cat-eat">好吃</span></div>
+<div class="nb-meta"><span>📍 10 Broad Canal Way, Kendall · 步行15min/1km</span><span>💰 $12-20/人</span><span>🕐 8:00-21:00</span></div>
+<div class="nb-detail">现代犹太熟食店！手工贝果+烟熏三文鱼+腌菜+Pastrami三明治。早餐来这里吃个贝果，体验正宗美式Brunch。有鸡尾酒吧。</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🍺 Cambridge Brewing Co. <span class="nb-arrow">▶</span></div><span class="nb-cat cat-eat">好喝</span></div>
+<div class="nb-meta"><span>📍 1 Kendall Sq · 步行15min/1km</span><span>💰 $15-25/人</span><span>🕐 11:30-23:00</span></div>
+<div class="nb-detail">波士顿最早的精酿啤酒坊之一！自酿啤酒+酒吧美食(炸鱼薯条/炸鸡三明治)。露天露台可以带狗。会议结束后来一杯精酿放松！</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🏛️ MIT Museum <span class="nb-arrow">▶</span></div><span class="nb-cat cat-see">好看</span></div>
+<div class="nb-meta"><span>📍 314 Main St, Kendall Sq · 步行15min/1km</span><span>💰 $18/人 周日10-12免费</span><span>🕐 10:00-17:00 周四到20:00</span></div>
+<div class="nb-detail">2022年搬到Kendall Sq新馆！互动展览超多：机器人/全息影像/AI艺术。非常适合做AI研究的人去逛。周日上午10-12点免费！周四延长到晚8点。</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🛶 Charles River 查尔斯河步道 <span class="nb-arrow">▶</span></div><span class="nb-cat cat-see">好看</span></div>
+<div class="nb-meta"><span>📍 酒店门口！ · 0min/0m</span><span>💰 免费 (划船$20/h)</span><span>🕐 全天</span></div>
+<div class="nb-detail">酒店就在河边！沿河步道是跑步/散步的绝佳路线，可以看波士顿天际线。Charles River Canoe & Kayak在Kendall Sq有租船点($20/小时)，天气好的话划船看MIT超浪漫。</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🛍️ CambridgeSide 购物中心 <span class="nb-arrow">▶</span></div><span class="nb-cat cat-shop">好买</span></div>
+<div class="nb-meta"><span>📍 100 CambridgeSide Pl · 步行18min/1.3km</span><span>💰 视购买</span><span>🕐 周一-周六10:00-21:00 周日11:00-19:00</span></div>
+<div class="nb-detail">Cambridge最大的室内购物中心！有Macy's/T.J. Maxx/H&M/Best Buy/H Mart(韩国超市!可以买泡面零食)。下雨天或空闲时间可以来逛逛。</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">👗 The Garment District <span class="nb-arrow">▶</span></div><span class="nb-cat cat-shop">好买</span></div>
+<div class="nb-meta"><span>📍 200 Broadway, Cambridge · 步行12min/850m</span><span>💰 $2/磅(按重量!)</span><span>🕐 11:00-20:00</span></div>
+<div class="nb-detail">超酷的二手/复古服装仓库！一楼By the Pound区域衣服按重量卖$2/磅(周五$1/磅)！二楼是整理好的vintage精选。淘到宝的快乐无与伦比。</div>
+</div>
+
+<div class="nb-card" onclick="this.classList.toggle('open')">
+<div class="nb-top"><div class="nb-name">🌿 Kendall Square Roof Garden <span class="nb-arrow">▶</span></div><span class="nb-cat cat-see">好看</span></div>
+<div class="nb-meta"><span>📍 Kendall Sq停车场顶层 · 步行15min/1km</span><span>💰 免费</span><span>🕐 日出-日落</span></div>
+<div class="nb-detail">隐藏在停车场顶层的秘密花园！有郁金香/玫瑰/树木，可以俯瞰Kendall Sq。本地人lunch break最爱的地方，游客很少知道。带杯咖啡上来坐坐。</div>
+</div>
+
+</div>
+
+
+
+<div class="footer"><div class="big">🗽✈️🦞</div>祝我们旅途愉快，HSP 2026 大获成功！</div>
+</div>
+
+<script>
+const D=[
+{d:'3/21',w:'六',c:'nyc',t:'抵达 + 办卡',s:'凌晨5am到 → T-Mobile → Nintendo → Apple Watch → Five Guys → 川菜晚餐',
+p:[
+{tm:'05:00',ic:'🏨',tp:'walk',pl:'抵达喜来登酒店',br:'寄存行李，大堂休息 📌酒店5min',tg:['all'],dt:{a:'811 7th Ave, NY 10019',tr:'从波士顿方向包车/大巴约5h',tp:'跟前台说 "Could I store my luggage?" 大堂沙发休息到天亮。T-Mobile 10am才开门不用急。'}},
+{tm:'10:00',ic:'📱',tp:'walk',pl:'T-Mobile 办电话卡',br:'有了美国号码一切解锁 📌酒店5min',tg:['all'],dt:{a:'1535 Broadway (Times Sq)',tr:'🚶 酒店步行5min',c:'$20 prepaid卡',tp:'带护照作ID。办好后导航打车叫外卖全部解锁！'}},
+{tm:'11:00',ic:'🍔',tp:'food',pl:'Five Guys 汉堡',br:'🧑‍💻FDD的第一个美式汉堡！T-Mobile旁！ 📌酒店7min',tg:['fdd'],dt:{a:'253 W 42nd St',tr:'🚶 T-Mobile往南走5min！都在42nd St附近',c:'$10-18/人',tp:'全美最受欢迎汉堡！现做牛肉饼+无限配料，薯条给超多！推荐 Bacon Cheeseburger + Cajun Fries。吃完一路往北逛不绕路！'}},
+{tm:'11:45',ic:'📖',tp:'walk',pl:'Midtown Comics Times Square',br:'👩WJ给弟弟买Invincible漫画！全美最大漫画店 📌酒店5min',tg:['wang'],dt:{a:'200 W 40th St (Five Guys走2min!)',tr:'🚶 Five Guys往南走2分钟就到！都在40th-42nd St',c:'漫画$10-20/本 合集$15-30',tp:'全美最大的漫画店！Invincible (无敌) 系列在这里肯定有。可以买单本(single issue)也可以买合集(Trade Paperback/Compendium)。Invincible Compendium合集三本收全144期，送礼很有份量！店里还有大量周边T恤/手办。'}},
+{tm:'12:00',ic:'🎮',tp:'walk',pl:'Nintendo NYC 旗舰店',br:'全球唯一！往北走到50th St 📌酒店8min',tg:['all'],dt:{a:'10 Rockefeller Plaza (W 50th St)',tr:'🚶 Five Guys往北走10min到50th St',tp:'全球唯一Nintendo官方旗舰店！三层楼，NYC限定周边，中国买不到。'}},
+{tm:'13:00',ic:'',tp:'walk',pl:'Apple Store 第五大道',br:'🧑‍💻FDD入手Apple Watch！继续往北 📌酒店12min',tg:['fdd'],dt:{a:'767 5th Ave (59th St)',tr:'🚶 Nintendo继续往北走12min沿5th Ave到59th St',c:'Watch $399起 (纽约税~8.875%)',tp:'⚠️ 必须买GPS版！不买Cellular版！蜂窝版频段锁区，美版eSIM不兼容港/陆运营商。GPS版全球通用，比港便宜HKD 200-400，Apple国际联保。',al:'⚠️ 只买GPS版！Cellular买了也用不了蜂窝！'}},
+{tm:'14:00',ic:'🌳',tp:'walk',pl:'Central Park 南端散步',br:'Apple Store出门就是！零距离！ 📌酒店8min',tg:['all'],dt:{a:'Central Park South (59th St)',tr:'🚶 Apple Store出门2min就是Central Park入口！',tp:'今天凌晨5am到会很累，不要走太深！南端散散步，然后沿7th Ave往南走10min回酒店(53rd St)。'}},
+{tm:'',ic:'📌',tp:'',pl:'Optional: 圣帕特里克大教堂+图书馆',br:'5th Ave顺路免费看看 📌酒店5min',tg:['opt'],dt:{a:'大教堂50th&5th | 图书馆42nd&5th',tp:'小红书推荐！都在5th Ave上！大教堂在Nintendo旁(50th St)，图书馆在Five Guys旁(42nd St)，一路往北走的时候顺便看！'}},
+{tm:'18:00',ic:'🌶️',tp:'food',pl:'回酒店check-in → 👩川菜晚餐！',br:'酒店旁正宗川菜！第一天吃碗水煮鱼治愈',tg:['wang','all'],dt:{a:'Szechuan Gourmet (Bryant Park附近) 或 The Best Sichuan (47 W 39th St)',tr:'🚶 酒店步行5-8分钟',c:'$20-35/人',tp:'👩WJ的心愿！米其林推荐的Szechuan Gourmet就在Bryant Park旁，走路8min；The Best Sichuan在39th St走路5min。都是地道川菜！推荐：水煮鱼(Boiled Fish in Chili)·麻婆豆腐(Mapo Tofu)·夫妻肺片(Sliced Beef & Ox Tongue)·担担面(Dan Dan Noodles)。第一天时差+凌晨到，一碗麻辣治愈一切！18:00前回酒店附近，吃完直接回房休息。'}}
+],
+ach:['📱 搞定美国电话卡','🎮 打卡全球唯一Nintendo','⌚ 🧑‍💻FDD入手Apple Watch','🍔 🧑‍💻FDD第一个美式汉堡','🌳 Central Park初体验','🌶️ 👩WJ的川菜！水煮鱼治愈时差']},
+
+{d:'3/22',w:'日',c:'nyc',t:'购物大丰收日',s:'Jersey Gardens全天 → Coach·Nike·RL → Trader Joe\'s',
+p:[
+{tm:'08:30',ic:'🚌',tp:'bus',pl:'出发去Port Authority',br:'步行5min，售票机买票！',tg:['all'],dt:{a:'625 8th Ave',tr:'🚶 出门右转8th Ave往南',tp:'⚠️ 先在售票机买票！不能上车付现金！选Jersey Gardens方向，可以刷卡。',al:'售票机买票！不能上车付现！'}},
+{tm:'09:30',ic:'🛍️',tp:'bus',pl:'Jersey Gardens Outlet',br:'NJ买衣服鞋零税！先拿coupon！',tg:['all'],dt:{a:'651 Kapkowski Rd, Elizabeth NJ',tr:'🚌 NJ Transit 111路 33-45min',c:'车票$5-7',tp:'带空行李箱！到了先去服务台说 "I\'m an international visitor" 拿coupon book。NJ买衣服鞋子零消费税！'}},
+{tm:'10:00',ic:'👜',tp:'',pl:'全天Outlet扫货',br:'🧑‍💻Coach包+👩WJBlazer+RL',tg:['fdd','wang'],dt:{c:'视购买',tp:'🧑‍💻FDD→Coach Outlet(Outlet价比专柜便宜50-70%!) 👩WJ→Ralph Lauren(polo~$55+帽子$25-40)+J.Crew(Blazer $50-100)+Columbia(冬装$60-120) 全员→Nike·Levi\'s·Skechers 午饭Food Court $8-15'}},
+{tm:'15:30',ic:'🚌',tp:'bus',pl:'坐111路回纽约',br:'天还亮带着战利品回！',tg:['all'],dt:{tr:'🚌 111路回Port Authority 33-45min',c:'$5-7'}},
+{tm:'17:00',ic:'🛒',tp:'walk',pl:'Trader Joe\'s',br:'TJ帆布袋是美国文化符号！ 📌酒店5min',tg:['all'],dt:{a:'675 8th Ave (步行5min)',c:'$20-40',tp:'帆布袋！Everything But The Bagel调味料必买！独家零食/坚果/巧克力，只有美国有。'}},
+{tm:'18:00',ic:'🚫',tp:'',pl:'回酒店',br:'天黑前回！战利品满满',tg:['all'],dt:{tp:'整理战利品，看还缺什么后面补。'}}
+],
+ach:['🛍️ Outlet大丰收！NJ零税！','👜 🧑‍💻FDD拿下Coach包','👔 👩WJ搞定Poster战袍','🛒 TJ帆布袋get']},
+
+{d:'3/23',w:'一',c:'nyc',t:'文化艺术沉浸日',s:'MET → Subway → Glossier → McNally Jackson → MoMA',
+p:[
+{tm:'09:00',ic:'🏛️',tp:'uber',pl:'MET 大都会博物馆',br:'世界最大艺术博物馆之一',tg:['wang','all'],dt:{a:'1000 5th Ave',tr:'🚕 Uber 15min ($15-20, 4人分$4-5)',c:'建议$30/人',tp:'在人类文明长河中漫步。慢慢逛到12点。MET Store有精美文化复刻品！'}},
+{tm:'12:00',ic:'🥪',tp:'walk',pl:'Subway 午餐',br:'🦙MM的地道美式三明治！',tg:['mie'],dt:{tr:'🚶 MET附近',c:'$8-12/人',tp:'点餐流程：①选面包Italian/Wheat ②选肉Italian BMT/Steak&Cheese ③选配菜 ④选酱Ranch/Chipotle ⑤说"For here"堂食/"To go"带走'}},
+{tm:'12:30',ic:'💄',tp:'subway',pl:'Glossier SoHo旗舰店',br:'粉色空间打卡拍照！',tg:['wang'],dt:{a:'233 Lafayette St',tr:'🚇 86St→Spring St 20min',c:'$2.90+购买',tp:'纽约本土网红美妆！粉色空间超适合拍照。Cloud Paint腮红/Boy Brow眉胶/You香水。'}},
+{tm:'13:00',ic:'👗',tp:'walk',pl:'Petite Studio',br:'纽约本土设计师品牌！SoHo小众女装',tg:['wang'],dt:{a:'Howard St (Glossier走3min)',tr:'🚶 Glossier出来往南走3分钟！',c:'$100-300',tp:'纽约本土小众设计师品牌，以亚洲身材友好的版型出名！优雅简约风，连衣裙/西装外套/针织衫都很适合亚洲女生。SoHo这家是旗舰店，可以试穿。比官网买省运费还能现场看面料。'}},
+{tm:'13:30',ic:'📚',tp:'walk',pl:'McNally Jackson 书店',br:'🦙MM的书店！纽约最美独立书店',tg:['mie'],dt:{a:'52 Prince St (SoHo走3min)',tp:'SoHo的文艺灵魂！有咖啡区可坐下翻书。🦙四家书店打卡第一站！'}},
+{tm:'15:30',ic:'🎨',tp:'subway',pl:'MoMA Design Store',br:'全球顶级设计周边 📌酒店2min',tg:['wang'],dt:{a:'11 W 53rd St',tr:'🚇 R线→49St',tp:'设计小物/艺术周边/创意礼品。离酒店超近！'}},
+{tm:'',ic:'📌',tp:'',pl:'Optional: Chinatown',br:'SoHo走10min，想吃中餐可去',tg:['opt'],dt:{tp:'小红书推荐"有生活气人间烟火"。离SoHo步行10min。'}},
+{tm:'16:00',ic:'👔',tp:'uber',pl:'DXL大码男装 (给弟弟买衣服)',br:'👩WJ弟弟大码3XL-4XL 专业大码店3XL-8XL都有！',tg:['wang'],dt:{a:'DXL 675 6th Ave (Chelsea 21st-22nd St)',tr:'🚕 MoMA Uber 10min ($10-12)',c:'T恤$25-50 牛仔裤$50-80 外套$60-150',tp:'全美最大的大码男装专卖店！尺码到8XL/腰围64寸。弟弟大码3XL-4XL大约穿3XL-4XL。推荐买：Nike Dri-FIT大码运动套装、Levi\'s Big&Tall牛仔裤、Columbia/North Face大码外套、Polo Ralph Lauren大码polo衫。店员都是专业大码顾问(Certified FIT Expert)可以帮忙量尺寸选码。国内这些品牌根本没有这么大的码！营业时间周一-周六10am-7pm。'}},
+{tm:'',ic:'🏦',tp:'walk',pl:'📌 Optional: HSBC银行办卡',br:'👩WJ+🦙MM办卡！131 E 57th St 营业到18:00',tg:['opt'],dt:{a:'HSBC 131 E 57th St, Ste 102',tr:'🚕 MoMA Uber 5min ($8-10)',c:'免费开户',tp:'👩WJ和🦙MM办HSBC银行卡！这家营业到18:00，时间充裕！15:30出发→16:00到→办卡45min→16:45办完→还有1小时余量。带护照+美国地址(可用酒店地址Sheraton 811 7th Ave)。🧑‍💻FDD和👧BJ可先回酒店休息。',al:'⚠️ 必带护照！周一-周五 8:30-18:00，周末不开！'}},
+{tm:'18:00',ic:'🚫',tp:'',pl:'回酒店',br:'办完卡Uber回酒店5min',tg:['all'],dt:{tp:'HSBC办完Uber回酒店5min。今天充实！'}}
+],
+ach:['🏛️ MET — 人类文明长河','🥪 🦙Subway初体验','💄 Glossier粉色打卡','📚 🦙McNally Jackson','🎨 MoMA设计周边']},
+
+{d:'3/24',w:'二',c:'nyc',t:'★ 全员心愿达成日！',s:'Strand → 华尔街 → 9/11 → 自由女神 → Brooklyn Bridge → Shake Shack',
+p:[
+{tm:'08:30',ic:'📚',tp:'uber',pl:'Strand Bookstore',br:'🦙"18 Miles of Books"！',tg:['mie'],dt:{a:'828 Broadway',tr:'🚕 Uber 10min ($10-12)',tp:'传奇书店！帆布袋是纽约文化icon $15-20。🦙第二站！'}},
+{tm:'10:00',ic:'🐂',tp:'uber',pl:'华尔街 Charging Bull',br:'🦙和铜牛合影沾财气！',tg:['mie'],dt:{a:'Broadway & Morris St',tr:'🚕 Uber 10min ($12-15)',tp:'全球金融中心心脏！铜牛/纽交所/联邦厅都在附近。'}},
+{tm:'10:30',ic:'🕊️',tp:'walk',pl:'★ 9/11 国家纪念馆',br:'纽约最沉重也最坚韧的地方',tg:['xhs','all'],dt:{a:'180 Greenwich St',tr:'🚶 华尔街步行10min',c:'户外免费 / 博物馆$26可选',tp:'小红书强推！巨型瀑布水池沉静肃穆。户外纪念池免费，停留30-45min。博物馆$26参观路线设计很棒。'}},
+{tm:'11:30',ic:'🗽',tp:'walk',pl:'★ Staten Island Ferry',br:'👧BJ的自由女神！免费！',tg:['bei'],dt:{a:'Whitehall Terminal',tr:'🚶 9/11走8min到码头',c:'完全免费！',tp:'👧BJ心愿达成！上船站右侧靠栏杆！去程右侧看女神，回程左侧看曼哈顿。全程1h (25min×2)，每30min一班。',al:'站右侧！去看女神，回看曼哈顿！'}},
+{tm:'13:00',ic:'🌉',tp:'uber',pl:'DUMBO区',br:'Jacques Torres巧克力+看天际线',tg:['wang'],dt:{tr:'🚕 Uber 10min ($10-12)',tp:'Jacques Torres纽约最好手工巧克力。河边看曼哈顿天际线角度绝佳！'}},
+{tm:'13:30',ic:'🌁',tp:'walk',pl:'走Brooklyn Bridge！',br:'此生必走！天际线最经典',tg:['wang','all'],dt:{tr:'🚶 DUMBO→曼哈顿 25-30min',tp:'纽约天际线最经典角度！桥上风大穿暖！中午光线好拍照绝美。'}},
+{tm:'14:30',ic:'🍔',tp:'walk',pl:'Shake Shack',br:'🧑‍💻纽约诞生的精品汉堡！',tg:['fdd'],dt:{a:'City Hall附近',c:'$12-18/人',tp:'🧑‍💻汉堡Part2！ShackBurger+Cheese Fries+Concrete(冰淇淋)。'}},
+{tm:'15:30',ic:'🏬',tp:'uber',pl:'Macy\'s Herald Square',br:'全球最大百货！办9折卡',tg:['all'],dt:{a:'151 W 34th St',tr:'🚕 Uber 10min ($12-15)',tp:'进门先说"I\'m an international visitor"办游客9折卡。'}},
+{tm:'',ic:'📌',tp:'',pl:'Optional: 帝国大厦',br:'Macy\'s旁！$44 时间够可去',tg:['opt'],dt:{a:'350 5th Ave (Macy\'s旁!)',c:'$44',tp:'小红书："白天看秩序夜晚看灵魂"。就在Macy\'s旁，但今天已很满量力而行。'}},
+{tm:'17:30',ic:'🚫',tp:'uber',pl:'回酒店',br:'今天最精彩！Uber回',tg:['all'],dt:{tr:'🚕 Uber ($10-12)',tp:'全员心愿达成！好好休息。'}}
+],
+ach:['📚 🦙Strand — 帆布袋get','🐂 🦙华尔街铜牛合影','🕊️ 9/11纪念馆 — 肃穆震撼','🗽 👧BJ看到自由女神！','🌉 Brooklyn Bridge此生必走','🍔 🧑‍💻Shake Shack']},
+
+{d:'3/25',w:'三',c:'transit',t:'★ High Line + Hamilton + 转场!',s:'早上High Line → Chelsea Market → CVS → 退房 → 1pm Hamilton → Amtrak → 波士顿',
+p:[
+{tm:'08:30',ic:'🌿',tp:'uber',pl:'★ High Line 高线公园',br:'废弃铁路变空中花园！小红书强推',tg:['xhs','wang'],dt:{a:'34th St入口',tr:'🚕 Uber 8min ($10-12)',tp:'今天时间紧，走30-40min精华段就好！'}},
+{tm:'09:30',ic:'🍽️',tp:'walk',pl:'Chelsea Market 快速早午餐',br:'Los Tacos/Lobster Place 赶Hamilton前吃饱！',tg:['all'],dt:{a:'75 9th Ave',tr:'🚶 High Line旁5min',c:'$12-20/人',tp:'Los Tacos No.1 taco $4.75超火！或Lobster Place龙虾卷$22先尝为快。速度吃完！'}},
+{tm:'10:00',ic:'💊',tp:'uber',pl:'CVS 保健品快速采购',br:'速战速决！ 📌酒店5min',tg:['all'],dt:{tr:'🚕 Uber 10min回Midtown',tp:'鱼油/氨糖/钙片。买一送一注意看。'}},
+{tm:'10:30',ic:'🧳',tp:'',pl:'回酒店最后整理',br:'充电宝随身 液体分散',tg:['all'],dt:{tp:'快速检查行李！'}},
+{tm:'11:00',ic:'🏨',tp:'walk',pl:'退房，行李寄前台',br:'"Could I store my luggage?"',tg:['all'],dt:{tp:'跟前台说存行李，他们给行李牌。'}},
+{tm:'11:30',ic:'🚶',tp:'walk',pl:'步行去剧院',br:'12min到 12:30排队进场',tg:['all'],dt:{a:'226 W 46th St',tr:'🚶 7th Ave→46th St 12min'}},
+{tm:'13:00',ic:'🎭',tp:'star',pl:'★★★ HAMILTON ★★★',br:'百老汇封神之作！约2h45min',tg:['wang','all'],dt:{c:'$200-350',tp:'用嘻哈讲述美国开国元勋的故事。约2h45min含中场。看完你会哼一整天！'}},
+{tm:'15:45',ic:'🏨',tp:'walk',pl:'散场→取行李',br:'快步走回12min',tg:['all'],dt:{tr:'🚶 12min回酒店取行李'}},
+{tm:'16:30',ic:'🚶',tp:'walk',pl:'步行去Penn Station',br:'7th Ave往南15min',tg:['all'],dt:{a:'31st & 7th Ave',tr:'🚶 拖行李15min'}},
+{tm:'17:00',ic:'🚄',tp:'train',pl:'Amtrak → Boston',br:'3.5-4h 提前买票！',tg:['all'],dt:{c:'$50-150(越早越便宜)',tp:'amtrak.com提前买！车上有WiFi，在火车上回味Hamilton。'}},
+{tm:'21:00',ic:'🏨',tp:'uber',pl:'到达波士顿→Hyatt',br:'Uber 15min check-in',tg:['all'],dt:{a:'575 Memorial Dr, Cambridge',tr:'🚕 Uber 15min ($15-20)',tp:'Hyatt 24h可check-in！查尔斯河畔，窗外就是MIT天际线。新城市新冒险！'}}
+],
+ach:['🌿 High Line空中花园!','🍽️ Chelsea Market美食','💊 CVS补给','🎭 HAMILTON封神之作!','🚄 Amtrak东海岸北上','🏨 入住查尔斯河畔Hyatt']},
+
+{d:'3/26',w:'四',c:'bos',t:'HSP Day 1 @ MIT',s:'会议第一天 → North End意大利区晚餐',
+p:[
+{tm:'08:30',ic:'🚶',tp:'walk',pl:'步行去MIT',br:'沿Memorial Dr 15min 河边超美 📌酒店15min',tg:['all'],dt:{tr:'🚶 沿Memorial Dr 15min',tp:'沿查尔斯河走，风景超美！波士顿风大穿暖。'}},
+{tm:'09:00',ic:'🎓',tp:'',pl:'HSP 2026 Day 1',br:'MIT Building 10 + Poster(Bldg 46)',tg:['all'],dt:{a:'77 Massachusetts Ave',tp:'Coffee Break是建人脉黄金时间！用英语手册开场白大胆破冰。'}},
+{tm:'18:00',ic:'🍝',tp:'uber',pl:'North End意大利区晚餐',br:'波士顿"小意大利"+Cannoli',tg:['all'],dt:{tr:'🚕 Uber 15min ($12-18)',tp:'Mike\'s Pastry的Cannoli是波士顿必吃甜点！波士顿晚上可出门。'}}
+],
+ach:['🎓 HSP开幕 — MIT殿堂学术交流','🤝 认识全球同行','🍝 North End + Cannoli']},
+
+{d:'3/27',w:'五',c:'bos',t:'HSP Day 2 + 龙虾！',s:'Poster Session → Legal Sea Foods龙虾',
+p:[
+{tm:'09:00',ic:'🎓',tp:'walk',pl:'HSP 2026 Day 2',br:'Poster Session！展示研究成果',tg:['all'],dt:{tp:'展示研究成果！记得"Great question!"开头回答。交换邮箱！'}},
+{tm:'18:30',ic:'🦞',tp:'uber',pl:'Legal Sea Foods 龙虾！',br:'👧BJ的波士顿龙虾！！',tg:['bei','all'],dt:{c:'$28-50/人',tp:'👧BJ心愿达成！Lobster Roll龙虾卷~$28(最经典!Connecticut式热黄油/Maine式冷拌) · Steamed Lobster整只~$38+ · Lobster Bisque浓汤~$14。来波士顿不吃龙虾等于没来过！小费18-20%。'}}
+],
+ach:['🎓 Poster展示成功','🦞 👧BJ的龙虾！鲜到飞起','🗣️ 和新朋友吃饭聊天']},
+
+{d:'3/28',w:'六',c:'bos',t:'HSP闭幕 + MIT COOP',s:'闭幕 → MIT COOP → Newbury St(往西) → Freedom Trail(往东走向North End) → 庆功',
+p:[
+{tm:'09:00',ic:'🎓',tp:'walk',pl:'HSP Day 3 闭幕',br:'交换邮箱！48h内发follow-up',tg:['all'],dt:{tp:'三天圆满！和新朋友交换邮箱合影。48h内发follow-up邮件(用手册模板)！'}},
+{tm:'14:30',ic:'📚',tp:'walk',pl:'MIT COOP书店',br:'🦙第三家！MIT帽衫=学霸同款',tg:['mie'],dt:{tr:'🚶 会场走5min',tp:'🦙第三站！MIT官方周边，帽衫=学霸同款。书区也值得逛。'}},
+{tm:'15:30',ic:'🛍️',tp:'subway',pl:'Newbury St 购物',br:'先往西！波士顿最美购物街',tg:['all'],dt:{a:'Back Bay',tr:'🚇 Red Line Kendall→Park St换Green Line→Copley 约15min',c:'$2.40',tp:'先来这里再往东走Freedom Trail，不绕路！维多利亚建筑+潮店+咖啡馆。'}},
+{tm:'17:00',ic:'🚶',tp:'walk',pl:'Freedom Trail → 走向North End',br:'从Boston Common沿红砖线往东走！',tg:['all'],dt:{tr:'🚶 Newbury走到Boston Common 10min，沿红砖线往东30-40min自然到North End',tp:'跟着地上红砖线走！从Boston Common往东经过历史遗迹，自然走到North End吃晚饭！不用走完全程，边走边感受。'}},
+{tm:'19:00',ic:'🥂',tp:'walk',pl:'North End庆功晚餐！',br:'Freedom Trail自然走到这里！🥂',tg:['all'],dt:{tr:'🚶 Freedom Trail终点就在North End！零绕路',tp:'逛完历史直接吃意大利菜庆功！完美衔接🥂'}}
+],
+ach:['🎓 HSP圆满结束！','📚 🦙MIT COOP第三站','🚶 Freedom Trail历史之路','🛍️ Newbury St最美街','🥂 庆功干杯！']},
+
+{d:'3/29',w:'日',c:'bos',t:'Harvard + 最后一天',s:'Harvard COOP → 校园 → Faneuil Hall → 机场过夜',
+p:[
+{tm:'09:00',ic:'📚',tp:'subway',pl:'Harvard COOP书店',br:'🦙集齐4家书店！大满贯！',tg:['mie'],dt:{tr:'🚇 Red Line Central→Harvard 15min',c:'$2.40',tp:'🦙四家书店大满贯！Strand/McNally/MIT/Harvard！Harvard周边也值得买。'}},
+{tm:'10:00',ic:'🏛️',tp:'walk',pl:'Harvard校园漫步',br:'摸铜像鞋求好运！',tg:['all'],dt:{tp:'全球最顶尖学府！摸John Harvard铜像左脚鞋，据说带来好运！'}},
+{tm:'11:00',ic:'🏨',tp:'subway',pl:'回Hyatt退房',br:'12:00退房 行李寄前台',tg:['all'],dt:{tp:'"Could I leave my bags until this evening?"'}},
+{tm:'13:00',ic:'🍽️',tp:'subway',pl:'Faneuil Hall/Quincy Market',br:'最热闹市集，最后一顿！',tg:['all'],dt:{tr:'🚇 Central→Park St',tp:'各种美食小吃！旅程最后大餐。'}},
+{tm:'17:00',ic:'✈️',tp:'uber',pl:'取行李→Logan机场',br:'机场过夜 带颈枕充电宝！',tg:['all'],dt:{tr:'🚕 Uber 20-30min ($20-30)',tp:'Terminal B/E相对安静。找有充电插座的座位，颈枕+充电宝+耳机必带！'}}
+],
+ach:['📚 🦙集齐4家书店！','🏛️ Harvard摸铜像求好运','🍽️ Faneuil Hall最后美食','✈️ 奔赴机场 满满回忆']},
+
+{d:'3/30',w:'一',c:'bos',t:'回家！🎉',s:'1:30pm离开波士顿 · 一路平安！',
+p:[{tm:'13:30',ic:'✈️',tp:'',pl:'离开波士顿，回家！',br:'一路平安！🎉',tg:['all'],dt:{tp:'充电宝随身！一路平安！'}}],
+ach:['🗽 看了自由女神','🎭 看了Hamilton','🌉 走了Brooklyn Bridge','🏛️ 逛了MET+MoMA','🕊️ 致敬了9/11','🌿 走了High Line','🎓 完成了HSP 2026','📚 打卡4家书店','🍔 汉堡×2','🦞 波士顿龙虾','🥪 地道Subway','⌚ Apple Watch','👜 Coach包','🛍️ Outlet大丰收','🎉 旅程圆满！']}
+];
+
+const TM={wang:'tag-wang',fdd:'tag-fdd',bei:'tag-bei',mie:'tag-mie',all:'tag-all',opt:'tag-opt',xhs:'tag-xhs'};
+const TL={wang:'👩WJ',fdd:'🧑‍💻FDD',bei:'👧BJ',mie:'🦙MM',all:'⚪全员',opt:'📌optional',xhs:'📕小红书'};
+const rt=t=>`<span class="tl-tag ${TM[t]||'tag-all'}">${TL[t]||t}</span>`;
+const el=document.getElementById('itinerary');
+
+D.forEach((day,i)=>{
+const cc=day.c==='nyc'?'nyc':day.c==='transit'?'transit':'bos';
+const op=i===0?' open':'';
+let sh=day.p.map(s=>{
+const tags=(s.tg||[]).map(rt).join('');
+const hd=s.dt&&Object.keys(s.dt).length>0;
+let dr='';
+if(hd){
+let rows='';
+if(s.dt.a) rows+=`<div class="dr"><span class="dl">📍 地址</span><span>${s.dt.a}</span></div>`;
+if(s.dt.tr) rows+=`<div class="dr"><span class="dl">🚗 交通</span><span>${s.dt.tr}</span></div>`;
+if(s.dt.c) rows+=`<div class="dr"><span class="dl">💰 费用</span><span>${s.dt.c}</span></div>`;
+if(s.dt.tp) rows+=`<div class="tip">💡 ${s.dt.tp}</div>`;
+if(s.dt.al) rows+=`<div class="alert">${s.dt.al}</div>`;
+dr=`<div class="tl-detail">${rows}</div>`;
+}
+const ei=hd?'<span class="ei">▶</span>':'';
+const ck=hd?` onclick="event.stopPropagation();this.classList.toggle('open')"`:'';
+return `<div class="tl-item"${ck}>
+<div class="tl-dot ${s.tp}"></div>
+${s.tm?`<div class="tl-time">${s.tm}</div>`:''}
+<div class="tl-place">${s.ic} ${s.pl} ${ei}</div>
+<div class="tl-brief">${s.br||''}</div>
+${dr}<div>${tags}</div></div>`;
+}).join('');
+const ah=day.ach.map(a=>`<li>${a}</li>`).join('');
+el.innerHTML+=`<div class="day-card ${cc}${op}">
+<div class="day-header" onclick="this.parentElement.classList.toggle('open')">
+<div class="day-num"><div class="d">${day.d.split('/')[1]}</div><div class="w">周${day.w}</div></div>
+<div class="day-info"><div class="title">${day.t}</div><div class="subtitle">${day.s}</div></div>
+<div class="day-chevron">▼</div></div>
+<div class="day-body"><div class="timeline">${sh}</div>
+<div class="ach-box"><h4>🏆 今日份成就</h4><ul>${ah}</ul></div></div></div>`;
+});
+
+
+const meals={
+'3/21':[
+{type:'lunch',emoji:'🍔',name:'Five Guys',desc:'🧑‍💻FDD的美式汉堡！Bacon Cheeseburger + Cajun Fries',addr:'253 W 42nd St (酒店走7min)',cost:'$10-18/人',already:true,
+alts:[
+{name:'🍕 Joe\'s Pizza',desc:'纽约最著名的街头披萨！$3一片，薄脆经典NYC style。在7th Ave上离酒店走5min'},
+{name:'🌮 Los Tacos No.1',desc:'Chelsea Market旁，纽约最好吃的墨西哥taco之一。Adobada pork taco $4.75超香'},
+{name:'🍜 Xi\'an Famous Foods',desc:'西安名吃！手撕面+肉夹馍。Times Sq走5min'},
+{name:'🌶️ The Best Sichuan',desc:'川菜！47 W 39th St 酒店走5min。午餐套餐$15-18比晚餐便宜。水煮牛肉/担担面'},
+{name:'🌶️ Blue Willow 夜来湘',desc:'湘菜！W 56th St 酒店走5min。剁椒鱼头/小炒黄牛肉 地道湖南味'}
+]},
+{type:'dinner',emoji:'🌶️',name:'川菜：Szechuan Gourmet / The Best Sichuan',desc:'👩WJ的川菜！水煮鱼·麻婆豆腐·担担面，酒店走5-8min',addr:'Bryant Park / 39th St',cost:'$25-35/人',already:true,
+alts:[
+{name:'🍜 Szechuan Mountain House',desc:'四川山房，环境最美(锦鲤池+竹林)，Midtown有分店。火锅底料很正宗'},
+{name:'🥟 Mimi Cheng\'s Dumplings',desc:'台湾风味饺子，如果不想吃辣的话。猪肉韭菜/鸡肉香菇'},
+{name:'🌶️ Sky Pavilion 川云涧',desc:'川菜！Port Authority正对面 Outlet回来顺路！辣兔腿/麻辣豆腐嫩滑到不行'},
+{name:'🌶️ CHILI 美丽',desc:'米其林川菜！37th St 酒店走10min。主厨成都人 麻婆豆腐/松露牛柳 环境也美'},
+{name:'🍕 Emmy Squared',desc:'底特律风格方形厚披萨，和纽约thin crust完全不同的体验'}
+]}
+],
+'3/22':[
+{type:'lunch',emoji:'🍔',name:'Jersey Gardens Food Court',desc:'Outlet里的美食广场！选择多：Chick-fil-A/Panda Express/Sarku Japan',addr:'Jersey Gardens内',cost:'$8-15/人',already:true,
+alts:[
+{name:'🐔 Chick-fil-A',desc:'全美最受欢迎的鸡肉三明治连锁！Spicy Chicken Sandwich必点。周日关门但今天周六ok'},
+{name:'🐼 Panda Express',desc:'美式中餐快餐，Orange Chicken(陈皮鸡)是美国人的comfort food，可以试试'},
+{name:'🍣 Sarku Japan',desc:'日式快餐，Chicken Teriyaki饭$9-11，量大管饱'}
+]},
+{type:'dinner',emoji:'🍕',name:'Joe\'s Pizza',desc:'纽约最iconic的街头薄饼披萨！$3.50一片，排队也要吃。酒店走8min',addr:'7th Ave & W 40th附近多家',cost:'$5-10/人',
+alts:[
+{name:'🌯 The Halal Guys',desc:'纽约传奇街头美食！Chicken over Rice $9，黄酱白酱辣酱三种。53rd & 6th Ave，酒店走3min'},
+{name:'🍜 Xi\'an Famous Foods',desc:'西安名吃手撕面！Spicy Cumin Lamb面$13。Times Sq店走5min'},
+{name:'🛒 Trader Joe\'s现成食物',desc:'如果逛完太累就在TJ买现成沙拉/三明治/寿司回酒店吃，$6-10'}
+]}
+],
+'3/23':[
+{type:'lunch',emoji:'🥪',name:'Subway',desc:'🦙MM的地道美式三明治！Italian BMT或Steak & Cheese推荐',addr:'MET附近',cost:'$8-12/人',already:true,
+alts:[
+{name:'🥯 H&H Bagels',desc:'纽约正宗贝果！Lox Bagel(烟熏三文鱼+奶油芝士)是纽约经典早午餐$12-15'},
+{name:'🌶️ Wa Jeal 蛙叫',desc:'上东区最好的川菜！离MET走路10min。酸菜鱼/口水鸡/干煸四季豆 很正宗'},
+{name:'🌶️ Hwa Yuan 华源',desc:'下东区老牌川菜 1968年开业！冷面鸡/担担面 纽约华人心中的经典'},
+{name:'🌮 Taco Bell Cantina',desc:'如果想快速解决，美式墨西哥快餐，$5-8'}
+]},
+{type:'dinner',emoji:'🍕',name:'Prince Street Pizza',desc:'SoHo附近最火的方形辣味披萨！Spicy Spring $5一片，排队也要吃',addr:'27 Prince St (SoHo走5min)',cost:'$8-15/人',
+alts:[
+{name:'🍝 Rubirosa',desc:'SoHo超人气意大利餐厅，薄脆披萨+手工意面。可能需要排队，但值得'},
+{name:'🥡 打包回酒店',desc:'从SoHo顺路在MoMA附近买：Halal Guys(53rd&6th) 或 酒店附近中餐外卖'},
+{name:'🌶️ Hwa Yuan 华源',desc:'下东区！East Broadway 经典川菜。离SoHo Uber 5min。冷面鸡是招牌'},
+{name:'🌶️ Mala Project 麻辣工程',desc:'东村！创意川菜干锅(dry pot)自选配料 超受年轻人欢迎'},
+{name:'🍜 Ippudo',desc:'一风堂拉面 东村店最正宗'}
+]}
+],
+'3/24':[
+{type:'lunch',emoji:'🍔',name:'Shake Shack',desc:'🧑‍💻FDD的纽约精品汉堡！ShackBurger + Cheese Fries',addr:'City Hall附近 (Brooklyn Bridge旁)',cost:'$12-18/人',already:true,
+alts:[
+{name:'🍕 Juliana\'s Pizza',desc:'DUMBO最好的披萨！Brooklyn Bridge脚下'},
+{name:'🥡 Luke\'s Lobster',desc:'mini龙虾卷$18-22'},
+{name:'🌮 Tacos El Bronco',desc:'Brooklyn Bridge Park旁墨西哥餐车$3-5'}
+]},
+{type:'dinner',emoji:'🌯',name:'The Halal Guys',desc:'纽约传奇街头美食！Chicken over Rice + 三种酱 📌酒店3min',addr:'53rd & 6th Ave (酒店走3min!)',cost:'$9-12/人',
+alts:[
+{name:'🍕 Joe\'s Pizza',desc:'$3.50/片快速解决'},
+{name:'📱 UberEats外卖',desc:'逛了一天累了叫外卖回酒店'},
+{name:'🌶️ The Best Sichuan',desc:'川菜！39th St 酒店走5min。干锅牛肉/重庆辣子鸡 今天暴走后来碗麻辣的'},
+{name:'🌶️ Land of Plenty 天府',desc:'川菜！E 58th St Uber 8min。开了十几年的老店 重庆酸菜鱼是招牌'},
+{name:'🍜 Xi\'an Famous Foods',desc:'西安名吃 凉皮+肉夹馍 酒店走5min'}
+]}
+],
+'3/25':[
+{type:'lunch',emoji:'🍽️',name:'Chelsea Market (早午餐)',desc:'9:30 High Line旁快速吃！赶Hamilton不能耽搁！',addr:'75 9th Ave',cost:'$12-20/人',
+alts:[
+{name:'🌮 Los Tacos No.1',desc:'Chelsea Market最火！Adobada Taco $4.75'},
+{name:'🦞 Lobster Place',desc:'龙虾卷$22先尝为快'},
+{name:'🍜 Very Fresh Noodles',desc:'手拉面 Dan Dan Noodles $14'}
+]},
+{type:'dinner',emoji:'🚄',name:'Penn Station买→火车上吃',desc:'站内Shake Shack/Pret，买好上车！',addr:'Penn Station内',cost:'$10-18/人',
+alts:[
+{name:'🍔 Shake Shack',desc:'站内有！买好在车上吃'},
+{name:'🥪 Pret A Manger',desc:'三明治+咖啡适合火车'},
+{name:'🍕 抓一片披萨上车',desc:'最快最省'},
+{name:'🍜 到波士顿后吃',desc:'South Station附近也有餐厅'}
+]}
+],
+'3/26':[
+{type:'lunch',emoji:'🍜',name:'Bon Me',desc:'MIT附近最受欢迎的越南风味快餐！Banh Mi三明治+Rice Bowl。学生最爱',addr:'Kendall Sq (MIT旁)',cost:'$10-15/人',
+alts:[
+{name:'🌮 Saloniki Greek',desc:'Kendall Sq的希腊快餐，Lamb Pita wrap $12超好吃'},
+{name:'🍔 Shake Shack Kendall',desc:'没错Cambridge也有Shake Shack！Harvard St上'},
+{name:'🌶️ 5 Spices House 五香居',desc:'MIT旁最好的川菜！麻辣香锅自选配料 回锅肉/干煸四季豆 学生最爱 量大便宜'},
+{name:'🥗 Clover Food Lab',desc:'波士顿本土素食快餐 Chickpea Fritter Sandwich $9'}
+]},
+{type:'dinner',emoji:'🍝',name:'North End意大利区',desc:'波士顿"小意大利"！推荐Giacomo\'s或Carmelina\'s + Mike\'s Pastry甜点',addr:'North End (Uber 15min)',cost:'$20-35/人',already:true,
+alts:[
+{name:'🍝 Giacomo\'s',desc:'North End最火的意大利餐！不接受预约只能排队。Lobster Fra Diavolo招牌'},
+{name:'🍝 Carmelina\'s',desc:'比Giacomo\'s稍贵但不用排那么久。Bolognese pasta很赞'},
+{name:'🧁 Mike\'s Pastry',desc:'必去！Cannoli(奶油卷)是波士顿必吃甜点$5-6。Florentine和Lobster Tail也推荐'},
+{name:'🧁 Modern Pastry',desc:'Mike\'s对面 本地人其实更爱这家 人少味道不输'},
+{name:'🌶️ Sumiao Hunan Kitchen 素描湘',desc:'★米其林推荐湘菜！Kendall Sq MIT旁！剁椒鱼头/小炒黄牛肉/外婆菜 Boston Magazine最佳中餐 强烈推荐!'}
+]}
+],
+'3/27':[
+{type:'lunch',emoji:'🍜',name:'Sumiao Hunan Kitchen 素描湘',desc:'★米其林推荐湘菜！就在MIT Kendall Sq！剁椒鱼头/小炒黄牛肉/外婆菜 中国胃的救赎',addr:'Kendall Sq',cost:'$12-18/人',
+alts:[
+{name:'🍕 Area Four',desc:'MIT旁手工披萨+创意沙拉 学术圈午餐热门'},
+{name:'🌶️ 5 Spices House',desc:'MIT旁川菜 麻辣香锅/回锅肉 量大便宜 学生最爱'},
+{name:'🍜 Dumpling House',desc:'Cambridge的饺子馆！猪肉白菜水饺+酸辣汤，中国胃的救赎'}
+]},
+{type:'dinner',emoji:'🦞',name:'Legal Sea Foods',desc:'👧BJ的波士顿龙虾！Lobster Roll~$28 / 整只蒸龙虾~$38+',addr:'Boston多家分店',cost:'$28-50/人',already:true,
+alts:[
+{name:'🦞 Neptune Oyster',desc:'North End更高端的海鲜！Lobster Roll被评为全波士顿最好。但要排队1-2h'},
+{name:'🦞 Row 34',desc:'Fort Point的现代海鲜餐厅，Oyster Bar+Lobster，环境更trendy'},
+{name:'🦞 James Hook & Co.',desc:'海边龙虾棚屋 Lobster Roll $25大份'},
+{name:'🌶️ Sumiao 素描湘',desc:'如果不想吃海鲜→米其林湘菜！Kendall Sq MIT旁 剁椒鱼头同样鲜到飞起'}
+]}
+],
+'3/28':[
+{type:'lunch',emoji:'🍔',name:'Veggie Galaxy',desc:'Central Sq的特色素食/非素食diner！Burger+Milkshake+Pie，美式复古风',addr:'Central Sq (Hyatt附近)',cost:'$12-18/人',
+alts:[
+{name:'🍜 Dumpling House',desc:'想吃中餐！水饺+炒饭+酸辣汤，人均$12-15'},
+{name:'🥗 Clover Food Lab',desc:'波士顿本土素食快餐'},
+{name:'🌶️ Sumiao 素描湘',desc:'连吃两天也不腻！换个菜：农家煎豆腐/孜然羊排/手撕包菜'},
+{name:'🌶️ 5 Spices House',desc:'MIT旁川菜 今天试试酸菜鱼/水煮肉片'},
+{name:'🍕 Area Four',desc:'MIT旁手工披萨'}
+]},
+{type:'dinner',emoji:'🥂',name:'North End 庆功晚餐！',desc:'会议结束干杯！试试和第一晚不同的餐厅',addr:'North End',cost:'$25-40/人',already:true,
+alts:[
+{name:'🍝 Trattoria Il Panino',desc:'North End经典意大利！Veal Parmesan和Seafood Risotto很赞'},
+{name:'🥩 Strega',desc:'更高端的意大利餐，适合庆祝！Steak和Pasta都出色'},
+{name:'🍷 Enoteca',desc:'意大利酒吧 Wine+Small Plates'},
+{name:'🌶️ Too Hot 太辣',desc:'Harvard Square新开的高端川菜！牛蛙/烤鱼/鸭肉 环境优雅 适合庆祝'},
+{name:'🧁 别忘了Mike\'s Pastry!',desc:'Cannoli打包回酒店当宵夜！'}
+]}
+],
+'3/29':[
+{type:'lunch',emoji:'🍽️',name:'Faneuil Hall / Quincy Market',desc:'波士顿最热闹的美食市集！各种小吃摊位。最后的波士顿味道',addr:'Faneuil Hall',cost:'$10-18/人',already:true,
+alts:[
+{name:'🦞 Boston Chowda Co.',desc:'Quincy Market内！New England Clam Chowder in Bread Bowl $12-15必吃'},
+{name:'🥩 Saus',desc:'比利时风格薯条+各种酱！Poutine(肉汁芝士薯条)$10-14'},
+{name:'🌮 El Pelon Taqueria',desc:'如果从Faneuil走去North End方向，路上有这家超棒的墨西哥'},
+{name:'🌶️ Dumpling Palace',desc:'Back Bay的中国饺子！小笼包/锅贴/酸辣汤 想吃中餐的最后机会'},
+{name:'🍝 再去一次North End',desc:'最后机会吃意大利！走路8min'}
+]},
+{type:'dinner',emoji:'✈️',name:'机场简餐',desc:'Logan机场内选择不少。过安检后Terminal B/E有餐厅',addr:'Logan Airport',cost:'$12-20/人',
+alts:[
+{name:'🍔 Legal Sea Foods (机场店)',desc:'没错机场里也有Legal！最后一次吃龙虾的机会。Lobster Roll $28'},
+{name:'🍕 Vino Volo',desc:'机场酒吧，Wine+Pizza+Small Plates，等飞机时放松一下'},
+{name:'🥪 Dunkin\'',desc:'波士顿本土品牌！在机场买杯咖啡+donut，最地道的波士顿告别方式$5-8'}
+]}
+]
+};
+
+// Render meals into each day card
+document.querySelectorAll('.day-card').forEach((card,i)=>{
+const day=D[i];
+const m=meals[day.d];
+if(!m||!m.length) return;
+const body=card.querySelector('.day-body');
+const achBox=body.querySelector('.ach-box');
+const sec=document.createElement('div');
+sec.className='meals-section';
+sec.innerHTML='<div class="meals-title">🍽️ 今日餐饮安排</div>';
+m.forEach(meal=>{
+const altsH=meal.alts.map(a=>`<div class="meal-alt-item"><div><span class="alt-name">${a.name}</span><br><span class="alt-desc">${a.desc}</span></div></div>`).join('');
+sec.innerHTML+=`<div class="meal-card ${meal.already?'meal-already':''}" onclick="this.classList.toggle('open')">
+<span class="meal-type ${meal.type}">${meal.type==='lunch'?'午餐 Lunch':'晚餐 Dinner'}</span>
+${meal.already?'<span style="font-size:.7em;background:#27AE60;color:#fff;padding:1px 8px;border-radius:100px;margin-left:6px">已安排</span>':''}
+<div class="meal-main"><div class="meal-emoji">${meal.emoji}</div><div class="meal-info">
+<div class="meal-name">${meal.name}</div>
+<div class="meal-desc">${meal.desc}</div>
+<div class="meal-meta"><span>📍 ${meal.addr}</span><span>💰 ${meal.cost}</span></div>
+</div></div>
+<div class="meal-alts-btn">其他选择 <span class="ma-arrow">▶</span></div>
+<div class="meal-alts">${altsH}</div>
+</div>`;
+});
+body.insertBefore(sec,achBox);
+});
+
+document.querySelectorAll('.tab-btn').forEach(b=>{
+b.addEventListener('click',()=>{
+
+document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+b.classList.add('active');
+document.getElementById(b.dataset.tab).classList.add('active');
+});
+});
+
+</script>
+</body>
+</html>
